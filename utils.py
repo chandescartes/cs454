@@ -25,6 +25,34 @@ def get_top_element(xpath, target_element):
         element = element.getparent()
     return element
 
+def get_correct_position(level_dict, element):
+    position = 1
+    if element.getparent() is None:
+        return position
+    else:
+        siblings = element.getparent()
+        matching_siblings = []
+        for sibling in siblings:
+            if is_element_matching_level(sibling, level_dict):
+                matching_siblings.append(sibling)
+        for i, sibling in enumerate(matching_siblings):
+            if sibling == element:
+                return position + i
+    print("ERROR: failed getting correct position")
+    return position
+
+def is_element_matching_level(element, level_dict):
+    if level_dict['name'] is not '*' and level_dict['name'] != element.tag:
+        return False
+    for attr in level_dict['attributes']:
+        tmp = attr.split('=')
+        key = tmp[0]
+        value = tmp[1].split("\"")[1]
+        if key not in element.keys() or element.get(key) != value:
+            return False
+    return True
+
+
 def has_attribute(key, level_dict):
     for attr in level_dict['attributes']:
         if attr.startswith(key):
@@ -35,8 +63,7 @@ def level_string_to_dict(level_string):
     dic = {
         'name': None,
         'position': None,
-        'attributes': [],
-        'text': None
+        'attributes': []
     }
     s = level_string
     tmp = s.split('[')
@@ -49,9 +76,7 @@ def level_string_to_dict(level_string):
         else:
             preds = list(map(lambda x: x.strip(), s.split('and')))
             for pred in preds:
-                if pred.startswith('text()='):
-                    dic['text'] = pred.split('\"')[1]
-                elif pred.startswith('@'):
+                if pred.startswith('@'):
                     dic['attributes'].append(pred[1:])
     return dic
 
@@ -59,10 +84,8 @@ def level_dict_to_string(level_dict):
     dic = level_dict
     s = ""
     s = s + dic['name']
-    if len(dic['attributes']) > 0 or dic['text'] is not None:
+    if len(dic['attributes']) > 0:
         preds = ""
-        if dic['text'] is not None:
-            preds = preds + "text()=\"" + dic['text'] + "\""
         for attr in dic['attributes']:
             if preds != "":
                 preds = preds + " and "
@@ -71,5 +94,4 @@ def level_dict_to_string(level_dict):
         s = s + preds
     if dic['position'] is not None:
         s = s + "[" + str(dic['position']) + "]"
-
     return s
