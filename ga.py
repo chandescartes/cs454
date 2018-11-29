@@ -49,6 +49,8 @@ class GA(object):
             indiv = Individual(self, generate_xpath(levels[i:]))
             self.pop.append(indiv)
 
+        shuffle(self.pop)
+
     def evolve(self):
         # self.optimum = self.pop[0]
         # if self.verbose:
@@ -69,17 +71,10 @@ class GA(object):
         # print(round(self.optimum.dist,2))
         # TODO
 
-        self.mate(self.pop[0], self.pop[1])
-        self.mate(self.pop[0], self.pop[2])
-        self.mate(self.pop[0], self.pop[3])
-        self.mate(self.pop[1], self.pop[2])
-        self.mate(self.pop[1], self.pop[3])
-        self.mate(self.pop[2], self.pop[3])
-
-        # for i, ind in enumerate(self.pop):
-        #     print('---------',i+1)
-        #     print(ind.xpath)
-        #     ind.mutate()
+        for i, ind in enumerate(self.pop):
+            print('---------',i+1)
+            print(ind.xpath)
+            ind.mutate()
 
     def eval_pop(self):
         for ind in self.pop:
@@ -160,7 +155,6 @@ class GA(object):
         if len1 <= 1 and len2 <= 1:
             return parent1, parent2
 
-        print(len1, len2)
         r = randint(1, min(len1, len2))
         parsed1 = parse_xpath(parent1.xpath)
         parsed2 = parse_xpath(parent2.xpath)
