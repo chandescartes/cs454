@@ -1,0 +1,21 @@
+webarchive url:
+https://web.archive.org/web/20120101004920/http://us.cnn.com/2011/12/16/showbiz/most-charitable-celebrities/index.html?hpt=hp_c3
+
+target element:
+<div>Give Back Hollywood founder Todd Krim with dancer Julianne Hough at a recent charity benefit.</div>
+
+target XPath:
+/html/body/div[@id='cnnContainer']/div[@class='cnn_maincntnr']/div[@class='cnn_contentarea']/div[@id='cnnContentContainer']/div[@class='cnn_strycntntlft']/div[@class='cnn_strylftcntnt'][2]/div[@class='cnn_strylctcntr cnn_strylccimg300']/div[2]
+
+
+current url:
+https://edition.cnn.com/2011/12/16/showbiz/most-charitable-celebrities/index.html
+
+target element:
+<div class="element-raw appearance-standard">Give Back Hollywood founder Todd Krim with dancer Julianne Hough at a recent charity benefit.</div>
+
+target XPath:
+/html[@class='js no-flash geolocation websockets localstorage webworkers no-touchevents fontface supports textshadow csscolumns csscolumns-width csscolumns-span csscolumns-fill csscolumns-gap csscolumns-rule csscolumns-rulecolor csscolumns-rulestyle csscolumns-rulewidth csscolumns-breakbefore csscolumns-breakafter csscolumns-breakinside flexbox csstransforms3d no-mobile no-phone no-tablet mobilegradea no-ios no-android no-windows no-iospre10 no-iemobile no-ieunsupported no-ie11unsupported no-ie no-edge chrome no-gdpr']/body[@class='pg pg-vertical pg-vertical--entertainment pg-showbiz pg-leaf pg-article international t-light multi-ads--complete page-scrolled']/div[@class='pg-right-rail-tall pg-wrapper ']/article[@class='pg-rail-tall pg-rail--align-right ']/div[@class='l-container']/div[@class='pg-rail-tall__wrapper']/div[@class='pg-side-of-rail pg-rail-tall__side']/div[@class='pg-rail-tall__body']/section[@id='body-text']/div[@class='l-container']/div[@class='el__embedded el__embedded--standard'][1]/div[@class='el__image--standard js__image--standard']/div/div[@class='media__caption el__gallery_image-title']/div[@class='element-raw appearance-standard']
+
+Result:
+Give Back Hollywood founder Todd Krim with dancer Julianne Hough at a recent charity benefit.

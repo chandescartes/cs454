@@ -1,0 +1,21 @@
+webarchive url:
+https://web.archive.org/web/20161104150946/http://www.reuters.com/article/us-usa-election-polls-idUSKBN12Y1DZ
+
+target element:
+<a href="/web/20161104150946/http://www.reuters.com/news/archive/politicsNews" class="">Politics</a>
+
+target XPath:
+/html/body[@class='BETAUS article']/div[@id='content']/section[3]/div[@id='rcs-articleHeader']/div[@class='column1 col col-10']/div[@class='article-header']/div[@class='article-info']/span[@class='article-section']/a
+
+
+current url:
+https://www.reuters.com/article/us-usa-election-polls-idUSKBN12Y1DZ
+
+target element:
+<a href="/news/archive/politicsNews" class="xh-highlight">Politics</a>
+
+target XPath:
+/html/body/div[@class='renderable'][2]/div/div[@class='ArticlePage_container']/div[@class='StandardArticle_container'][1]/div/div[@id='USKBN12Y1DZ']/div[@class='ArticleHeader_container']/div[@class='ArticleHeader_upper-container']/div[@class='foreground']/div[@class='TwoColumnLayout_container TwoColumnLayout_fluid-left']/div[@class='TwoColumnLayout_column 
+
+Result:
+Politics
