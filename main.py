@@ -5,8 +5,6 @@ import argparse
 
 from ga import GA
 
-global SHOW_PROGRESS
-
 def parse_arguments():
 	parser = argparse.ArgumentParser()
 	parser.add_argument("-p", type=int, default=30, help="Set an even number population size (default=30)")
@@ -22,9 +20,7 @@ def parse_arguments():
 
 if __name__ == '__main__':
 	args = parse_arguments()
-
-	SHOW_PROGRESS = args.s
-	abs_xpath = "//?/?"
+	abs_xpath = "//html[1]/div[@id='div-id']/p[text()='X' and @class='a'][1]"
 
 	ga = GA(
 		pop_size=args.p, 
@@ -33,7 +29,8 @@ if __name__ == '__main__':
 		dom_filepath=args.d,
 		abs_xpath=abs_xpath,
 		mut_k=args.k,
-		use_elitism=args.e)
+		use_elitism=args.e,
+		verbose=args.s)
 
 	ga.evolve()
 	ga.save()
