@@ -19,7 +19,6 @@ class GA(object):
         self.DOM = etree.parse(dom_filepath)
         self.abs_xpath = abs_xpath
         self.element = self.DOM.xpath(abs_xpath)
-        self.ancestors = []
 
         self.eval_tot = 0
         self.gen = 1
@@ -29,13 +28,6 @@ class GA(object):
         self.children = []
 
         self.optimum = None
-
-        element = self.element
-        while True:
-            element = self.element.getparent()
-            if element is None:
-                break
-            self.ancestors.append(element)
 
         init_population(self)
 

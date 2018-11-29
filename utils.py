@@ -1,5 +1,8 @@
 import lxml
 
+def uniform_quote(xpath):
+    return xpath.replace("'", "\"")
+
 # parse xpath return list of levels
 def parse_xpath(xpath):
     if xpath[1] == '/':
@@ -12,10 +15,7 @@ def get_xpath_legnth(xpath):
 
 # generate xpath from list of levels
 def generate_xpath(levels):
-    if levels[0] == 'html':
-        return '/'+'/'.join(levels)
-    else:
-        return '//'+'/'.join(levels)
+    return '//'+'/'.join(levels)
 
 # return element class of xpath top level
 def get_top_element(xpath, target_element):
@@ -31,7 +31,7 @@ def parse_level(level):
         'name': None,
         'position': None,
         'attributes': [],
-        'text' None:
+        'text': None
     }
 
     tmp = level.split('[')
@@ -48,5 +48,4 @@ def parse_level(level):
                     res['text'] = pred.split('\"')[1]
                 elif pred.startswith('@'):
                     res['attributes'].append(pred[1:])
-
     return res
