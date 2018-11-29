@@ -27,7 +27,7 @@ def get_top_element(xpath, target_element):
 
 def has_attribute(key, level_dict):
     for attr in level_dict['attributes']:
-        if attr.startswith(key)
+        if attr.startswith(key):
             return True
     return False
 
