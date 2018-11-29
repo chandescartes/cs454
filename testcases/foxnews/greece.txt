@@ -1,0 +1,22 @@
+webarchive url:
+https://web.archive.org/web/20150706150710/http://www.foxnews.com/world/2015/07/06/greek-finance-minister-yanis-varoufakis-announces-resignation-after-no-vote/
+
+target element:
+<p class="">- Sigmar Gabriel, German economy minister</p>
+
+target XPath:
+/html/body[@class='world fn2']/div[@id='wrapper']/div[@id='takeover']/div[@id='doc']/div[@id='content']/div/div[1]/div[2]/div/div[@class='main']/article/div/div[3]/blockquote/p[2]
+
+
+
+current url:
+https://www.foxnews.com/world/financial-markets-react-after-greece-bailout-plan-rejected-finance-minister-quits
+
+target element:
+<span class="quote-author xh-highlight">— Sigmar Gabriel, German economy minister</span>
+
+target XPath:
+/html[@class=' cookies geolocation history hashchange no-touchevents fullscreen cssanimations csstransitions']/body[@class='fn article-single']/div[@id='__nuxt']/div[@id='__layout']/div[@id='wrapper']/div[@class='page-content']/div[@class='row full']/main[@class='main-content']/article[@class='article-wrap']/div[@class='article-content-wrap sticky-columns']/div[@class='article-content']/div[@class='article-body']/blockquote[@class='pull-quote']/span[@class='quote-author']
+
+Result:
+- Sigmar Gabriel, German economy minister

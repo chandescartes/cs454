@@ -1,0 +1,21 @@
+webarchive url:
+https://web.archive.org/web/20130712130113/http://www.nature.com:80/news/nasa-s-2020-mars-rover-would-search-for-signs-of-past-life-1.13365
+
+target element:
+<a href="#auth-1" class="fn xh-highlight">Maggie McKee</a>
+
+target XPath:
+/html[@class='js-enabled']/body/div[@id='constrain']/div[@id='main']/div[@id='constrain-content']/div[@id='content']/article/div[@id='article']/header/ul[@class='authors cleared']/li/span[@class='vcard']/a[@class='fn']
+
+
+current url:
+https://www.nature.com/news/nasa-s-2020-mars-rover-would-search-for-signs-of-past-life-1.13365
+
+target element:
+<a href="#auth-1" class="fn xh-highlight" data-popup-width="estimate">Maggie McKee</a>
+
+target XPath:
+/html[@class='js-enabled']/body/div[@id='constrain']/div[@id='main']/div[@id='constrain-content']/div[@id='content']/article/div[@id='article']/header/ul[@class='authors cleared']/li[@class='popup-parent']/span[@class='vcard']/a[@class='fn']
+
+Result:
+Maggie McKee

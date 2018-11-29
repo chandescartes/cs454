@@ -1,0 +1,21 @@
+webarchive url:
+https://web.archive.org/web/20150122144148/http://www.bbc.com/news/business-30910216
+
+target element:
+<h1 class="story-header">SpaceX gets $1bn from Google and Fidelity</h1>
+
+target XPath:
+/html[@class=' blq-js blq-not-bbc-co-uk bbcdotcom ads-enabled bbcdotcom-analytics-init']/body[@class='news disable-wide-advert bbccom_ads_embedded bbccom_slot_wallpaper          bbccom_desktop']/div[@id='blq-container-outer']/div[@id='blq-container']/div[@id='blq-container-inner']/div[@id='blq-main']/div[@class='business  has-no-ticker  main-content-container']/div[@id='content-wrapper']/div[@id='main-content']/div[@class='layout-block-a']/div[@class='story-body']/h1[@class='story-header']
+
+
+current url:
+https://www.bbc.com/news/business-30910216
+
+target element:
+<h1 class="story-body__h1">SpaceX gets $1bn from Google and Fidelity</h1>
+
+target XPath:
+/html[@id='responsive-news']/body[@id='asset-type-sty']/div[@class='direction bbccom_visible']/div[@id='orb-modules']/div[@id='site-container']/div[@id='page']/div[1]/div[@class='container']/div[@class='container--primary-and-secondary-columns column-clearfix']/div[@class='column--primary']/div[@class='story-body']/h1[@class='story-body__h1']
+
+Result: 
+SpaceX gets $1bn from Google and Fidelity
