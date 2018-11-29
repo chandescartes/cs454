@@ -1,9 +1,9 @@
-import random
-import csv
-from lxml import etree
-from collections import defaultdict
 
-import utils
+from random import randint
+
+from lxml import etree
+
+from utils import *
 
 class GA(object):
 
@@ -17,7 +17,7 @@ class GA(object):
         self.use_elitism = use_elitism
 
         self.DOM = etree.parse(dom_filepath)
-        self.abs_xpath = abs_xpath
+        self.abs_xpath = uniform_quote(abs_xpath)
         elements = self.DOM.xpath(abs_xpath)
         assert len(elements) == 1, "Invalid absolute XPath!"
         self.element = elements[0]
@@ -40,11 +40,14 @@ class GA(object):
             print("Initialization Complete!")
 
     def init_population(self):
-        self.pop = ["//*", self.abs_xpath]
-        levels = utils.parse_xpath(self.abs_xpath)
+        self.pop.append(Individual(self, "//*"))
+        self.pop.append(Individual(self, self.abs_xpath))
+
+        levels = parse_xpath(self.abs_xpath)
 
         for i in range(1, len(levels)):
-            self.pop.append(utils.generate_xpath(levels[i:]))
+            indiv = Individual(self, generate_xpath(levels[i:]))
+            self.pop.append(indiv)
 
     def evolve(self):
         # self.optimum = self.pop[0]
@@ -65,7 +68,8 @@ class GA(object):
         #     print("  Evolution Finished")
         # print(round(self.optimum.dist,2))
         # TODO
-        pass
+        parent1, parent2 = self.pop[1], self.pop[2]
+        result = self.mate(parent1, parent2)
 
     def eval_pop(self):
         for ind in self.pop:
@@ -140,8 +144,23 @@ class GA(object):
         pass
 
     def mate(self, parent1, parent2):
-        pass
-        
+        len1 = get_xpath_length(parent1.xpath)
+        len2 = get_xpath_length(parent2.xpath)
+
+        if len1 <= 1 or len2 <= 1:
+            return parent1, parent2
+
+        r1, parsed1 = randint(1, len1 - 1), parse_xpath(parent1.xpath)
+        r2, parsed2 = randint(1, len2 - 1), parse_xpath(parent2.xpath)
+        child1 = Individual(self, generate_xpath(parsed1[:r1] + parsed2[r2:]))
+        child2 = Individual(self, generate_xpath(parsed2[:r2] + parsed1[r1:]))
+
+        # print(parent1.xpath)
+        # print(parent2.xpath)
+        # print(child1.xpath)
+        # print(child2.xpath)
+
+        return child1, child2
 
     def save(self):
         # with open('solution.csv', 'w') as csvfile:
@@ -155,16 +174,16 @@ class Individual(object):
 
     def __init__(self, ga, xpath):
         self.ga = ga
-        self.type = None # True: pop', False: pop'', None: unknown
         self.xpath = xpath
+        self.type = self.get_type() # True = pop', False = pop''
 
         self.transformations = [
-            self.transAddName,
-            self.transAddPredicate,
-            self.transAddLevel,
-            self.transRemoveName,
-            self.transRemovePredicate,
-            self.transRemoveLevel
+            self.trans_add_name,
+            self.trans_add_predicate,
+            self.trans_add_level,
+            self.trans_remove_name,
+            self.trans_remove_predicate,
+            self.trans_remove_level
         ]
 
 
@@ -174,7 +193,18 @@ class Individual(object):
 
     def mutate(self):
         # TODO
+
+        # self.type = self.get_type()
         pass
+
+    def get_type(self):
+        elements = self.ga.DOM.xpath(self.xpath)
+        if len(elements) != 1:
+            return False
+
+        this, target = elements[0], self.ga.element
+        return this.tag == target.tag and this.text == target.text \
+            and this.tail == target.tail and this.attrib == target.attrib
 
     def trans_add_name(self):
         # TODO
