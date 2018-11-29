@@ -3,6 +3,8 @@ import csv
 from lxml import etree
 from collections import defaultdict
 
+import utils
+
 class GA(object):
 
     def __init__(self, pop_size, eval_lim, nodes, mut_rate, dom_filepath, abs_xpath, mut_k=1, use_elitism=False):
@@ -28,6 +30,7 @@ class GA(object):
         self.optimum = None
 
         init_population(self)
+
 
         if SHOW_PROGRESS:
             print("Initialization Complete!")
@@ -223,37 +226,51 @@ class Individual(object):
         # TODO
         pass
 
-    def transAddName(self):
+    def trans_add_name(self):
+        # TODO
+        abs_xpath = self.ga.abs_xpath
+        xpath = self.xpath
+
+        levels = parse_xpath(xpath)
+
+        if levels[0] != '*':
+            name = get_top_element(xpath, self.ga.element).tag
+            levels[0] = name
+
+        return generate_xpath(levels)
+
+
+    def trans_add_predicate(self):
+        # TODO
+        abs_xpath = self.ga.abs_xpath
+        xpath = self.xpath
+
+
+        pass
+
+    def trans_add_level(self):
         # TODO
         abs_xpath = self.ga.abs_xpath
         xpath = self.xpath
         pass
 
-    def transAddPredicate(self):
+    def trans_remove_name(self):
+        # TODO
+        abs_xpath = self.ga.abs_xpath
+        xpath = self.xpath
+
+        levels = parse_xpath(xpath)
+        levels[0] = '*'
+
+        return generate_xpath(levels)
+
+    def trans_remove_predicate(self):
         # TODO
         abs_xpath = self.ga.abs_xpath
         xpath = self.xpath
         pass
 
-    def transAddLevel(self):
-        # TODO
-        abs_xpath = self.ga.abs_xpath
-        xpath = self.xpath
-        pass
-
-    def transRemoveName(self):
-        # TODO
-        abs_xpath = self.ga.abs_xpath
-        xpath = self.xpath
-        pass
-
-    def transRemovePredicate(self):
-        # TODO
-        abs_xpath = self.ga.abs_xpath
-        xpath = self.xpath
-        pass
-
-    def transRemoveLevel(self):
+    def trans_remove_level(self):
         # TODO
         abs_xpath = self.ga.abs_xpath
         xpath = self.xpath
