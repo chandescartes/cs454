@@ -1,5 +1,5 @@
 
-from random import randint
+from random import randint, shuffle
 
 from lxml import etree
 
@@ -68,8 +68,10 @@ class GA(object):
         #     print("  Evolution Finished")
         # print(round(self.optimum.dist,2))
         # TODO
-        parent1, parent2 = self.pop[1], self.pop[2]
-        result = self.mate(parent1, parent2)
+        for i, ind in enumerate(self.pop):
+            print('---------',i+1)
+            print(ind.xpath)
+            ind.mutate()
 
     def eval_pop(self):
         for ind in self.pop:
@@ -192,10 +194,16 @@ class Individual(object):
         pass
 
     def mutate(self):
-        # TODO
+        options = self.transformations[:]
+        # shuffle(options)
+        for option in options:
+            if option():
+                print(option)
+                print(self.xpath)
+                self.update_positions()
+                # break
+        return
 
-        # self.type = self.get_type()
-        pass
 
     def get_type(self):
         elements = self.ga.DOM.xpath(self.xpath)
@@ -207,51 +215,96 @@ class Individual(object):
             and this.tail == target.tail and this.attrib == target.attrib
 
     def trans_add_name(self):
-        # TODO
         abs_xpath = self.ga.abs_xpath
         xpath = self.xpath
 
         levels = parse_xpath(xpath)
+        level_string = levels[0]
+        level_dict = level_string_to_dict(level_string)
 
-        if levels[0] != '*':
-            name = get_top_element(xpath, self.ga.element).tag
-            levels[0] = name
-
-        return generate_xpath(levels)
-
+        if level_dict['name'] == '*':
+            level_dict['name'] = get_top_element(xpath, self.ga.element).tag
+            levels[0] = level_dict_to_string(level_dict)
+            self.xpath = generate_xpath(levels)
+            return True
+        else:
+            return False
 
     def trans_add_predicate(self):
-        # TODO
         abs_xpath = self.ga.abs_xpath
         xpath = self.xpath
+        levels = parse_xpath(xpath)
+        level_string = levels[0]
+        level_dict = level_string_to_dict(level_string)
 
-
-        pass
+        element = get_top_element(xpath, self.ga.element)
+        keys = element.keys()
+        shuffle(keys)
+        for key in keys:
+            if not has_attribute(key, level_dict):
+                level_dict['attributes'].append(key+"=\""+element.get(key)+"\"")
+                level_string = level_dict_to_string(level_dict)
+                levels[0] = level_string
+                self.xpath = generate_xpath(levels)
+                return True
+        return False
 
     def trans_add_level(self):
-        # TODO
-        abs_xpath = self.ga.abs_xpath
-        xpath = self.xpath
-        pass
-
-    def trans_remove_name(self):
-        # TODO
         abs_xpath = self.ga.abs_xpath
         xpath = self.xpath
 
         levels = parse_xpath(xpath)
-        levels[0] = '*'
+        levels = ['*'] + levels
+        if get_xpath_length(self.ga.abs_xpath) == get_xpath_length(xpath):
+            return False
+        self.xpath = generate_xpath(levels)
+        return True
 
-        return generate_xpath(levels)
+    def trans_remove_name(self):
+        abs_xpath = self.ga.abs_xpath
+        xpath = self.xpath
+
+        levels = parse_xpath(xpath)
+        level_string = levels[0]
+        level_dict = level_string_to_dict(level_string)
+
+        if level_dict['name'] != '*':
+            level_dict['name'] = '*'
+            levels[0] = level_dict_to_string(level_dict)
+            self.xpath = generate_xpath(levels)
+
+            return True
+        else:
+            return False
 
     def trans_remove_predicate(self):
-        # TODO
         abs_xpath = self.ga.abs_xpath
         xpath = self.xpath
-        pass
+
+        levels = parse_xpath(xpath)
+        level_string = levels[0]
+        level_dict = level_string_to_dict(level_string)
+        if len(level_dict['attributes']) > 0:
+            rand = randint(0, len(level_dict['attributes'])-1)
+            del level_dict['atributes'][rand]
+            level_string = level_dict_to_string(level_dict)
+            levels[0] = level_string
+            self.xpath = generate_xpath(levels)
+            return True
+        else:
+            return False
 
     def trans_remove_level(self):
-        # TODO
         abs_xpath = self.ga.abs_xpath
         xpath = self.xpath
+
+        levels = parse_xpath(xpath)
+        if len(levels) > 1:
+            levels = levels[1:]
+            self.xpath = generate_xpath(levels)
+            return True
+        else:
+            return False
+
+    def update_positions(self):
         pass

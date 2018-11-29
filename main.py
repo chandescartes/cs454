@@ -23,14 +23,17 @@ if __name__ == '__main__':
 	abs_xpath = "//html[1]/div[@id='div-id']/p[text()='X' and @class='a'][1]"
 
 	ga = GA(
-		pop_size=args.p, 
+		pop_size=args.p,
 		eval_lim=args.f,
-		mut_rate=args.r, 
+		mut_rate=args.r,
 		dom_filepath=args.d,
 		abs_xpath=abs_xpath,
 		mut_k=args.k,
 		use_elitism=args.e,
 		verbose=args.s)
+
+	ga.pop[0]
+
 
 	ga.evolve()
 	ga.save()

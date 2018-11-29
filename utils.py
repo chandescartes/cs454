@@ -25,27 +25,51 @@ def get_top_element(xpath, target_element):
         element = element.getparent()
     return element
 
-def parse_level(level):
+def has_attribute(key, level_dict):
+    for attr in level_dict['attributes']:
+        if attr.startswith(key):
+            return True
+    return False
 
-    res = {
+def level_string_to_dict(level_string):
+    dic = {
         'name': None,
         'position': None,
         'attributes': [],
         'text': None
     }
-
-    tmp = level.split('[')
-    res['name'] = tmp[0]
+    s = level_string
+    tmp = s.split('[')
+    dic['name'] = tmp[0]
 
     for i in tmp[1:]:
         s = i.split(']')[0]
         if s.isdigit():
-            res['position'] = int(s)
+            dic['position'] = int(s)
         else:
             preds = list(map(lambda x: x.strip(), s.split('and')))
             for pred in preds:
                 if pred.startswith('text()='):
-                    res['text'] = pred.split('\"')[1]
+                    dic['text'] = pred.split('\"')[1]
                 elif pred.startswith('@'):
-                    res['attributes'].append(pred[1:])
-    return res
+                    dic['attributes'].append(pred[1:])
+    return dic
+
+def level_dict_to_string(level_dict):
+    dic = level_dict
+    s = ""
+    s = s + dic['name']
+    if len(dic['attributes']) > 0 or dic['text'] is not None:
+        preds = ""
+        if dic['text'] is not None:
+            preds = preds + "text()=\"" + dic['text'] + "\""
+        for attr in dic['attributes']:
+            if preds != "":
+                preds = preds + " and "
+            preds = preds + "@" +attr
+        preds = '[' + preds + ']'
+        s = s + preds
+    if dic['position'] is not None:
+        s = s + "[" + str(dic['position']) + "]"
+
+    return s
