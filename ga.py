@@ -7,8 +7,8 @@ import utils
 
 class GA(object):
 
-    def __init__(self, pop_size, eval_lim, nodes, mut_rate, dom_filepath, abs_xpath, mut_k=1, use_elitism=False):
-        if SHOW_PROGRESS:
+    def __init__(self, pop_size, eval_lim, mut_rate, mut_k, use_elitism, dom_filepath, abs_xpath, verbose=True):
+        if verbose:
             print("Initializing Genetic Algorithm...")
         self.pop_size = pop_size
         self.eval_lim = eval_lim
@@ -18,7 +18,11 @@ class GA(object):
 
         self.DOM = etree.parse(dom_filepath)
         self.abs_xpath = abs_xpath
-        self.element = self.DOM.xpath(abs_xpath)
+        elements = self.DOM.xpath(abs_xpath)
+        assert len(elements) == 1, "Invalid absolute XPath!"
+        self.element = elements[0]
+        # for ancestor in self.element.iterancestors():
+        #   print(self.DOM.getpath(ancestor))
 
         self.eval_tot = 0
         self.gen = 1
@@ -28,19 +32,23 @@ class GA(object):
         self.children = []
 
         self.optimum = None
+        self.verbose = verbose
 
-        init_population(self)
+        self.init_population()
 
-
-        if SHOW_PROGRESS:
+        if self.verbose:
             print("Initialization Complete!")
 
     def init_population(self):
-        # TODO
+        self.pop = ["//*", self.abs_xpath]
+        levels = utils.parse_xpath(self.abs_xpath)
+
+        for i in range(1, len(levels)):
+            self.pop.append(utils.generate_xpath(levels[i:]))
 
     def evolve(self):
         # self.optimum = self.pop[0]
-        # if SHOW_PROGRESS:
+        # if self.verbose:
         #     print("  G: {0}     \tScore: {1} \t{2}%".format(self.gen, round(self.optimum.dist,2), round(self.eval_tot/self.eval_lim*100, 1)))
         # while self.eval_tot < self.eval_lim:
         #     self.select_parents_by_rank()
@@ -49,11 +57,11 @@ class GA(object):
         #     self.form_next_gen()
         #     self.gen += 1
         #     self.optimum = self.pop[0]
-        #     if SHOW_PROGRESS:
+        #     if self.verbose:
         #         print("  G: {0}     \tScore: {1} \t{2}%".format(self.gen, round(self.optimum.dist,2), round(self.eval_tot/self.eval_lim*100, 1)))
         #     if self.gen % 100 == 0:
         #         self.save()
-        # if SHOW_PROGRESS:
+        # if self.verbose:
         #     print("  Evolution Finished")
         # print(round(self.optimum.dist,2))
         # TODO
@@ -132,66 +140,8 @@ class GA(object):
         pass
 
     def mate(self, parent1, parent2):
-        # child1 = Individual(self)
-        # child2 = Individual(self)
-        #
-        # while True:
-        #     i = random.randint(0, self.dim - 1)
-        #     j = random.randint(0, self.dim - 1)
-        #     if i == j:
-        #         continue
-        #     elif i < j:
-        #         left = i
-        #         right = j
-        #         break
-        #     else:
-        #         left = j
-        #         right = i
-        #         break
-        #
-        # for i in range(left, right):
-        #     child1.path[i] = parent1.path[i]
-        #
-        # s = set(parent1.path[left:right])
-        # j = 0
-        # for i in range(0, self.dim):
-        #     if i >= left and i < right:
-        #         continue
-        #     while parent2.path[j] in s:
-        #         j += 1
-        #     child1.path[i] = parent2.path[j]
-        #     j += 1
-        #
-        # while True:
-        #     i = random.randint(0, self.dim - 1)
-        #     j = random.randint(0, self.dim - 1)
-        #     if i == j:
-        #         continue
-        #     elif i < j:
-        #         left = i
-        #         right = j
-        #         break
-        #     else:
-        #         left = j
-        #         right = i
-        #         break
-        #
-        # for i in range(left, right):
-        #     child2.path[i] = parent2.path[i]
-        #
-        # s = set(parent2.path[left:right])
-        # j = 0
-        # for i in range(0, self.dim):
-        #     if i >= left and i < right:
-        #         continue
-        #     while parent1.path[j] in s:
-        #         j += 1
-        #     child2.path[i] = parent1.path[j]
-        #     j += 1
-        #
-        # return child1, child2
-        # TODO
         pass
+        
 
     def save(self):
         # with open('solution.csv', 'w') as csvfile:
@@ -203,19 +153,19 @@ class GA(object):
 
 class Individual(object):
 
-    transformations = [
-        self.transAddName,
-        self.transAddPredicate,
-        self.transAddLevel,
-        self.transRemoveName,
-        self.transRemovePredicate,
-        self.transRemoveLevel
-    ]
-
     def __init__(self, ga, xpath):
         self.ga = ga
         self.type = None # True: pop', False: pop'', None: unknown
         self.xpath = xpath
+
+        self.transformations = [
+            self.transAddName,
+            self.transAddPredicate,
+            self.transAddLevel,
+            self.transRemoveName,
+            self.transRemovePredicate,
+            self.transRemoveLevel
+        ]
 
 
     def eval(self):

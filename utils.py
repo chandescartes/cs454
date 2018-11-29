@@ -10,7 +10,7 @@ def parse_xpath(xpath):
     return xpath.split('/')[1:]
 
 # return legnth of xpath
-def get_xpath_legnth(xpath):
+def get_xpath_length(xpath):
     return len(parse_xpath(xpath))
 
 # generate xpath from list of levels
@@ -19,7 +19,7 @@ def generate_xpath(levels):
 
 # return element class of xpath top level
 def get_top_element(xpath, target_element):
-    length = get_xpath_legnth(xpath)
+    length = get_xpath_length(xpath)
     element = target_element
     for i in range(1, length):
         element = element.getparent()
