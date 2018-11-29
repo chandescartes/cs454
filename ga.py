@@ -68,10 +68,18 @@ class GA(object):
         #     print("  Evolution Finished")
         # print(round(self.optimum.dist,2))
         # TODO
-        for i, ind in enumerate(self.pop):
-            print('---------',i+1)
-            print(ind.xpath)
-            ind.mutate()
+
+        self.mate(self.pop[0], self.pop[1])
+        self.mate(self.pop[0], self.pop[2])
+        self.mate(self.pop[0], self.pop[3])
+        self.mate(self.pop[1], self.pop[2])
+        self.mate(self.pop[1], self.pop[3])
+        self.mate(self.pop[2], self.pop[3])
+
+        # for i, ind in enumerate(self.pop):
+        #     print('---------',i+1)
+        #     print(ind.xpath)
+        #     ind.mutate()
 
     def eval_pop(self):
         for ind in self.pop:
@@ -149,13 +157,16 @@ class GA(object):
         len1 = get_xpath_length(parent1.xpath)
         len2 = get_xpath_length(parent2.xpath)
 
-        if len1 <= 1 or len2 <= 1:
+        if len1 <= 1 and len2 <= 1:
             return parent1, parent2
 
-        r1, parsed1 = randint(1, len1 - 1), parse_xpath(parent1.xpath)
-        r2, parsed2 = randint(1, len2 - 1), parse_xpath(parent2.xpath)
-        child1 = Individual(self, generate_xpath(parsed1[:r1] + parsed2[r2:]))
-        child2 = Individual(self, generate_xpath(parsed2[:r2] + parsed1[r1:]))
+        print(len1, len2)
+        r = randint(1, min(len1, len2))
+        parsed1 = parse_xpath(parent1.xpath)
+        parsed2 = parse_xpath(parent2.xpath)
+
+        child1 = Individual(self, generate_xpath(parsed1[:-r] + parsed2[-r:]))
+        child2 = Individual(self, generate_xpath(parsed2[:-r] + parsed1[-r:]))
 
         # print(parent1.xpath)
         # print(parent2.xpath)
