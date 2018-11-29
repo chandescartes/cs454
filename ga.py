@@ -200,13 +200,10 @@ class Individual(object):
 
     def mutate(self):
         options = self.transformations[:]
-        # shuffle(options)
+        shuffle(options)
         for option in options:
             if option():
-                print(option)
-                print(self.xpath)
-                self.update_positions()
-                # break
+                break
         return
 
 
@@ -216,19 +213,20 @@ class Individual(object):
             return False
 
         this, target = elements[0], self.ga.element
-        return this.tag == target.tag and this.text == target.text \
+        return this.tag == target.tag \
             and this.tail == target.tail and this.attrib == target.attrib
 
     def trans_add_name(self):
-        abs_xpath = self.ga.abs_xpath
         xpath = self.xpath
-
         levels = parse_xpath(xpath)
         level_string = levels[0]
         level_dict = level_string_to_dict(level_string)
+        element = get_top_element(xpath, self.ga.element)
 
         if level_dict['name'] == '*':
             level_dict['name'] = get_top_element(xpath, self.ga.element).tag
+            if level_dict['position'] is not None:
+                level_dict['position'] = get_correct_position(level_dict, element)
             levels[0] = level_dict_to_string(level_dict)
             self.xpath = generate_xpath(levels)
             return True
@@ -236,7 +234,6 @@ class Individual(object):
             return False
 
     def trans_add_predicate(self):
-        abs_xpath = self.ga.abs_xpath
         xpath = self.xpath
         levels = parse_xpath(xpath)
         level_string = levels[0]
@@ -244,37 +241,52 @@ class Individual(object):
 
         element = get_top_element(xpath, self.ga.element)
         keys = element.keys()
-        shuffle(keys)
-        for key in keys:
-            if not has_attribute(key, level_dict):
-                level_dict['attributes'].append(key+"=\""+element.get(key)+"\"")
-                level_string = level_dict_to_string(level_dict)
-                levels[0] = level_string
-                self.xpath = generate_xpath(levels)
-                return True
+        options = [0] + keys
+        shuffle(options)
+        for option in options:
+            if option == 0:
+                if level_dict['position'] is None:
+                    level_dict['position'] = get_correct_position(level_dict, element)
+                    level_string = level_dict_to_string(level_dict)
+                    levels[0] = level_string
+                    self.xpath = generate_xpath(levels)
+                    return True
+                else:
+                    continue
+            else:
+                key = option
+                if not has_attribute(key, level_dict):
+                    level_dict['attributes'].append(key+"=\""+element.get(key)+"\"")
+                    if level_dict['position'] is not None:
+                        level_dict['position'] = get_correct_position(level_dict, element)
+                    level_string = level_dict_to_string(level_dict)
+                    levels[0] = level_string
+                    self.xpath = generate_xpath(levels)
+                    return True
+                else:
+                    continue
         return False
 
     def trans_add_level(self):
         abs_xpath = self.ga.abs_xpath
         xpath = self.xpath
-
         levels = parse_xpath(xpath)
         levels = ['*'] + levels
-        if get_xpath_length(self.ga.abs_xpath) == get_xpath_length(xpath):
+        if get_xpath_length(abs_xpath) == get_xpath_length(xpath):
             return False
         self.xpath = generate_xpath(levels)
         return True
 
     def trans_remove_name(self):
-        abs_xpath = self.ga.abs_xpath
         xpath = self.xpath
-
         levels = parse_xpath(xpath)
         level_string = levels[0]
         level_dict = level_string_to_dict(level_string)
+        element = get_top_element(xpath, self.ga.element)
 
         if level_dict['name'] != '*':
             level_dict['name'] = '*'
+            level_dict['position'] = get_correct_position(level_dict, element)
             levels[0] = level_dict_to_string(level_dict)
             self.xpath = generate_xpath(levels)
 
@@ -283,15 +295,21 @@ class Individual(object):
             return False
 
     def trans_remove_predicate(self):
-        abs_xpath = self.ga.abs_xpath
         xpath = self.xpath
-
         levels = parse_xpath(xpath)
         level_string = levels[0]
         level_dict = level_string_to_dict(level_string)
-        if len(level_dict['attributes']) > 0:
-            rand = randint(0, len(level_dict['attributes'])-1)
-            del level_dict['atributes'][rand]
+        options = level_dict['attributes'][:]
+        if level_dict['position'] is not None:
+            options.append(0)
+        if len(options) > 0:
+            rand = randint(0, len(options)-1)
+            if options[rand] == 0:
+                level_dict['position'] = None
+            else:
+                del level_dict['atributes'][rand]
+            if level_dict['position'] is not None:
+                level_dict['position'] = get_correct_position(level_dict, element)
             level_string = level_dict_to_string(level_dict)
             levels[0] = level_string
             self.xpath = generate_xpath(levels)
@@ -300,9 +318,7 @@ class Individual(object):
             return False
 
     def trans_remove_level(self):
-        abs_xpath = self.ga.abs_xpath
         xpath = self.xpath
-
         levels = parse_xpath(xpath)
         if len(levels) > 1:
             levels = levels[1:]
@@ -310,6 +326,3 @@ class Individual(object):
             return True
         else:
             return False
-
-    def update_positions(self):
-        pass

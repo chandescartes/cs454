@@ -20,7 +20,7 @@ def parse_arguments():
 
 if __name__ == '__main__':
 	args = parse_arguments()
-	abs_xpath = "//html[1]/div[@id='div-id']/p[text()='X' and @class='a'][1]"
+	abs_xpath = "//html[1]/div[@id='div-id']/p[@class='a'][1]"
 
 	ga = GA(
 		pop_size=args.p,
@@ -32,8 +32,19 @@ if __name__ == '__main__':
 		use_elitism=args.e,
 		verbose=args.s)
 
-	ga.pop[0]
-
-
+	# ga.pop[0]
+    #
+    #
+	# ind = ga.pop[1]
+	# ind.trans_remove_level()
+	# print(ind.xpath)
+	# ind.trans_remove_level()
+	# print(ind.xpath)
+	# ind.trans_add_level()
+	# print(ind.xpath)
+	# ind.trans_add_predicate()
+	# print(ind.xpath)
+	# ind.trans_add_predicate()
+	# print(ind.xpath)
 	ga.evolve()
 	ga.save()
