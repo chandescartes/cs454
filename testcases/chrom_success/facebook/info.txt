@@ -1,0 +1,16 @@
+webarchive url:
+https://web.archive.org/web/20160420111102/https://www.facebook.com/
+
+target element:
+<div id="reg_pages_msg" class="_58mk"><a href="/web/20160420111102/https://www.facebook.com/pages/create/?ref_type=registration_form">Create a Page</a> for a celebrity, band or business.</div>
+
+target XPath:
+//*[@id="reg_pages_msg"]
+
+
+current url:
+https://www.facebook.com/
+
+
+Result: 
+Create a Page for a celebrity, band or business.
