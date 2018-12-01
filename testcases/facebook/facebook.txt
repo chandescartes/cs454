@@ -1,0 +1,21 @@
+webarchive url:
+https://web.archive.org/web/20101210072221/http://www.facebook.com/
+
+target element:
+<div class="WelcomePage_SignUpSubheadline">It's free, and always will be.</div>
+
+target XPath:
+/html[@id='facebook']/body[@class='WelcomePage UIPage_LoggedOut Locale_en_US']/div[@id='globalContainer']/div[@id='content']/div/div[@class='WelcomePage_Container']/div[@class='WelcomePage_MainSell']/div[@class='WelcomePage_MainSellCenter clearfix']/div[@class='WelcomePage_MainSellRight']/div[@class='WelcomePage_SignUpSection']/div[@class='WelcomePage_SignUpMessage']/div[@class='WelcomePage_SignUpSubheadline']
+
+
+current url:
+https://www.facebook.com/
+
+target element:
+<div class="mbl _3m9 _6o _6s _mf">It’s free and always will be.</div>
+
+target XPath:
+/html[@id='facebook']/body[@class='fbIndex UIPage_LoggedOut _-kb apple _61s0 _605a b_c3pyn-ahh chrome webkit mac x2 Locale_en_US cores-gte4 _19_u hasAXNavMenubar']/div[@id='u_0_12']/div[@id='globalContainer']/div[@id='content']/div/div[@class='_50dz']/div/div[@class='pvl']/div[@class='_6_ _74']/div[@class='mbl _3m9 _6o _6s _mf']
+
+Result: 
+It’s free and always will be.

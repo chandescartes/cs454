@@ -1,0 +1,21 @@
+webarchive url:
+https://web.archive.org/web/20160709142011/http://www.dongascience.com/news/view/12863
+
+target element:
+<h3 class="xh-highlight">세계 최대 전파 망원경 ‘톈옌’, 차이나 쇼크의 정점인가 시작인가?</h3>
+
+target XPath:
+/html/body/div[@id='wrap']/div[@id='container']/div[@class='area view']/div[@id='news']/div[@class='section-main']/div[@id='snews_view']/div[@class='cont']/div[@class='tle']/h3
+
+
+current url:
+http://dongascience.donga.com/news.php?idx=12863
+
+target element:
+<h2 class="xh-highlight">세계 최대 전파 망원경 ‘톈옌’, 차이나 쇼크의 정점인가 시작인가?</h2>
+
+target XPath:
+/html/body/div[@id='view']/div[@id='article_title']/h2
+
+Result:
+세계 최대 전파 망원경 ‘톈옌’, 차이나 쇼크의 정점인가 시작인가?

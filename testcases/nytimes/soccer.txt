@@ -1,0 +1,21 @@
+webarchive url:
+https://web.archive.org/web/20140626164019/http://www.nytimes.com:80/2014/06/24/sports/worldcup/stoppage-time-in-the-world-cup-underscores-soccers-strange-rules.html?ref=worldcup
+
+target element:
+<time class="dateline" datetime="2014-06-23">JUNE 23, 2014</time>
+
+target XPath:
+/html[@class='flag-testFlag-On desktop section-worldcup format-medium tone-news has-comments has-large-lede viewport-small viewport-small-10 viewport-small-20 viewport-medium viewport-medium-10 viewport-medium-20 viewport-medium-30 viewport-medium-31 viewport-medium-40 viewport-medium-50 viewport-medium-60 viewport-large viewport-large-10 viewport-large-11 viewport-large-20 viewport-large-21 viewport-large-30 viewport-large-40 has-js has-flexbox has-flexboxlegacy has-canvas has-canvastext has-webgl has-no-touch has-geolocation has-postmessage has-websqldatabase has-indexeddb has-hashchange has-history has-draganddrop has-websockets has-rgba has-hsla has-multiplebgs has-backgroundsize has-borderimage has-borderradius has-boxshadow has-textshadow has-opacity has-cssanimations has-csscolumns has-cssgradients has-cssreflections has-csstransforms has-csstransforms3d has-csstransitions has-fontface has-generatedcontent has-video has-audio has-localstorage has-sessionstorage has-webworkers has-applicationcache has-svg has-inlinesvg has-smil has-svgclippaths tr-coretext tr-aa-unknown-subpixel wf-nytcheltenham-n7-active wf-nytcheltenhamextracnbd-n7-active wf-nytcheltenhamsh-i4-active wf-nytcheltenhamsh-i7-active wf-nytcheltenhamsh-n4-active wf-nytcheltenhamsh-n7-active wf-nytfranklin-i3-active wf-nytfranklin-i7-active wf-nytfranklin-n3-active wf-nytfranklin-n7-active wf-nytcheltenham-i4-active wf-nytcheltenham-i7-active wf-nytcheltenham-n4-active wf-active']/body/div[@id='shell']/main[@id='main']/article[@id='story']/header[@id='story-header']/div[@class='story-meta']/div[@class='story-meta-footer']/p[@class='byline-dateline']/time[@class='dateline']
+
+
+current url:
+https://www.nytimes.com/2014/06/24/sports/worldcup/stoppage-time-in-the-world-cup-underscores-soccers-strange-rules.html
+
+target element:
+<time class="css-qddhf4 eqgapgq0" datetime="2014-06-23">June 23, 2014</time>
+
+target XPath:
+/html[@class='story']/body/div[@id='app']/div[@class='css-v89234 e1dd99ql0']/div/main[@id='site-content']/article[@id='story']/header[@class='css-a44kk9 e345g291']/div[@class='css-30n6iy e345g290']/div[@class='css-acwcvw']/ul[@class='css-zh8slb e1hs04dy1']/li[1]/time[@class='css-qddhf4 eqgapgq0']
+
+Result:
+JUNE 23, 2014
