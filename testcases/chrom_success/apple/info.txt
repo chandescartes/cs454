@@ -1,0 +1,16 @@
+webarchive url:
+https://web.archive.org/web/20160730015253/https://www.apple.com/
+
+target element:
+<h3 class="ac-gf-directory-column-section-title">Apple Store</h3>
+
+target XPath:
+//*[@id="ac-globalfooter"]/div/nav/div[2]/div/label/h3
+
+
+current url:
+https://www.apple.com/
+
+
+Result: 
+Apple Store

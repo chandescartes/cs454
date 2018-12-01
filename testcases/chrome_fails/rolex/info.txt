@@ -1,0 +1,21 @@
+webarchive url:
+https://web.archive.org/web/20150808231905/https://www.rolex.com/
+
+target element:
+<a target="_blank" class=" wa-tracking-outlink" data-platform="pressroom" href="https://web.archive.org/web/20150808231905/http://pressroom.rolex.com/en.html">Visit our Pressroom</a>
+
+target XPath:
+/html/body/div[3]/div[3]/footer/div/div/div[1]/div[3]/div[4]/div/ul/li/a
+
+
+current url:
+https://web.archive.org/web/20171120115950/https://www.rolex.com/
+
+target element:
+<a target="_blank" class="wa-tracking-outlink xh-highlight" data-outlink="pressroom" href="https://web.archive.org/web/20171120115950/http://pressroom.rolex.com/en.html">Visit our Pressroom</a>
+
+target XPath:
+/html/body/div[3]/div[8]/footer/div/div/div[1]/div[3]/div[4]/div/ul/li/a
+
+Result: 
+Visit our Pressroom
