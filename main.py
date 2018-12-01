@@ -34,9 +34,9 @@ if __name__ == '__main__':
 		fitness_values=fit_val_temp,
 		verbose=args.s
 		)
+
 	ga.evolve()
-	ga.save()
-	print(fit_val_temp)
+	ga.log()
 
 	# for i in range(len(ga.pop)):
 	# 	for j in range(10):

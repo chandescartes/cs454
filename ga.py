@@ -1,7 +1,6 @@
 
+import copy, csv
 from random import randint, shuffle, uniform
-
-import copy
 
 from lxml import etree
 
@@ -10,34 +9,35 @@ from utils import *
 class GA(object):
 
     def __init__(self, pop_size, eval_lim, mut_rate, mut_k, use_elitism, dom_filepath, xpath, fitness_values, verbose=True):
-        if verbose:
-            print("Initializing Genetic Algorithm...")
+        # Parameters for GA
         self.pop_size = pop_size
         self.eval_lim = eval_lim
         self.mut_rate = mut_rate
         self.mut_k = mut_k
         self.use_elitism = use_elitism
+        self.fitness_values = fitness_values
 
-        self.DOM = etree.parse(dom_filepath)
+        # Internal objects
+        self.dom_filepath = dom_filepath
+        self.DOM = etree.parse(self.dom_filepath)
         elements = self.DOM.xpath(xpath)
-        assert len(elements) == 1, "Invalid absolute XPath!"
+        assert len(elements) == 1, "(__init__) Invalid XPath!"
         self.element = elements[0]
         self.abs_xpath = generate_abs_path(self.element)
 
-        self.eval_tot = 0
+        # Update during GA
         self.gen = 1
-
+        self.eval_tot = 0
         self.pop = []
         self.parents = []
         self.children = []
-
         self.optimum = None
+
+        # Other fields
         self.verbose = verbose
-
-        self.fitness_values = fitness_values
-
+        
+        # Initialization
         self.init_population()
-
         self.printv("Initialization Complete!")
 
     def printv(self, string):
@@ -47,7 +47,7 @@ class GA(object):
     def init_population(self):
         self.pop.append(Individual(self, "//*"))
         self.pop.append(Individual(self, self.abs_xpath))
-        self.optimum = self.pop[-1]
+        
         levels = parse_xpath(self.abs_xpath)
 
         for i in range(1, len(levels)):
@@ -57,9 +57,9 @@ class GA(object):
         shuffle(self.pop)
 
     def evolve(self):
-        # self.optimum = self.pop[0]
+        self.optimum = Individual(self, self.abs_xpath)
 
-        self.printv("  G: {}     \tScore: {} \t{}%".format(self.gen, round(self.optimum.fitness,2), round(self.eval_tot/self.eval_lim*100, 1)))
+        self.printv("  G: {}\tScore: {}\t{}%".format(self.gen, round(self.optimum.fitness, 2), round(self.eval_tot / self.eval_lim * 100, 1)))
 
         while self.eval_tot < self.eval_lim:
             self.select_parents_by_rank()
@@ -68,18 +68,12 @@ class GA(object):
             self.form_next_gen()
             self.gen += 1
             if self.optimum > self.pop[0]:
-                # print("new opt")
-                # print(self.optimum.fitness)
-                # print(self.pop[0].fitness)
                 self.optimum = copy.deepcopy(self.pop[0])
 
             if self.gen % 100 == 0:
-                self.printv("  G: {0}     \tScore: {1} \t{2}%".format(self.gen, round(self.pop[0].fitness,2), round(self.eval_tot/self.eval_lim*100, 1)))
-                self.save()
-
-            # self.printv("  Evolution Finished")
-
-        print("Score: {} \tXPath: {}".format(self.optimum.xpath, round(self.optimum.fitness, 2)))
+                self.printv("  G: {}\tScore: {}\t{}%".format(self.gen, round(self.optimum.fitness, 2), round(self.eval_tot / self.eval_lim * 100, 1)))
+        
+        print("XPath: {} \tScore: {}".format(self.optimum.xpath, round(self.optimum.fitness, 2)))
 
     def eval_pop(self):
         for ind in self.pop:
@@ -142,9 +136,7 @@ class GA(object):
             pop = self.pop + self.children
             pop.sort()
             self.pop = pop[:self.pop_size]
-            # while len(pop) > self.pop_size:
-            #     del pop[self.pop_size]
-
+            
         else:
             self.pop = self.children
             self.pop.sort()
@@ -163,13 +155,18 @@ class GA(object):
 
         return child1, child2
 
-    def save(self):
-        # with open('solution.csv', 'w') as csvfile:
-        #     writer  = csv.writer(csvfile, delimiter=' ')
-        #     for node in self.optimum.path:
-        #         writer.writerow([node])
-        # TODO
-        pass
+    def log(self):
+        row = [
+            self.dom_filepath, 
+            self.abs_xpath, 
+            str(self.fitness_values), 
+            self.optimum.xpath, 
+            str(self.optimum.fitness)
+        ]
+
+        with open('log.csv', 'a+') as csvfile:
+            writer = csv.writer(csvfile)
+            writer.writerow(row)
 
 class Individual(object):
 
