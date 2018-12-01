@@ -7,7 +7,7 @@ from utils import *
 
 class GA(object):
 
-    def __init__(self, pop_size, eval_lim, mut_rate, mut_k, use_elitism, dom_filepath, xpath, verbose=True):
+    def __init__(self, pop_size, eval_lim, mut_rate, mut_k, use_elitism, dom_filepath, xpath, fitness_values, verbose=True):
         if verbose:
             print("Initializing Genetic Algorithm...")
         self.pop_size = pop_size
@@ -31,6 +31,8 @@ class GA(object):
 
         self.optimum = None
         self.verbose = verbose
+
+        self.fitness_values = fitness_values
 
         self.init_population()
 
@@ -193,15 +195,12 @@ class Individual(object):
         else:
             pass
 
-
     def mutate(self):
-        options = self.transformations[:]
-        shuffle(options)
-        for option in options:
+        shuffle(self.transformations)
+        for option in self.transformations:
             if option():
+                print(option)
                 break
-        return
-
 
     def get_type(self):
         elements = self.ga.DOM.xpath(self.xpath)
@@ -209,117 +208,123 @@ class Individual(object):
             return False
 
         this, target = elements[0], self.ga.element
-        return this.tag == target.tag \
-            and this.tail == target.tail and this.attrib == target.attrib
+        return this.tag == target.tag and this.tail == target.tail and this.attrib == target.attrib
 
+    ## Change top level '*' to a tag
     def trans_add_name(self):
-        xpath = self.xpath
-        levels = parse_xpath(xpath)
-        level_string = levels[0]
-        level_dict = level_string_to_dict(level_string)
-        element = get_top_element(xpath, self.ga.element)
+        levels = parse_xpath(self.xpath)
+        level_dict = level_string_to_dict(levels[0])
 
-        if level_dict['name'] == '*':
-            level_dict['name'] = get_top_element(xpath, self.ga.element).tag
-            if level_dict['position'] is not None:
-                level_dict['position'] = get_correct_position(level_dict, element)
-            levels[0] = level_dict_to_string(level_dict)
-            self.xpath = generate_xpath(levels)
-            return True
-        else:
-            return False
+        # Cannot add name if top level is not '*'
+        if level_dict['name'] != '*':
+            return False 
 
+        element = get_top_element(self.xpath, self.ga.element) 
+        level_dict['name'] = element.tag
+        if level_dict['position'] is not None:
+            level_dict['position'] = get_correct_position(level_dict, element)
+
+        # Update xpath with added name
+        levels[0] = level_dict_to_string(level_dict)
+        self.xpath = generate_xpath(levels) 
+
+        return True
+
+    ## Add predicate (including position) at top level
     def trans_add_predicate(self):
-        xpath = self.xpath
-        levels = parse_xpath(xpath)
-        level_string = levels[0]
-        level_dict = level_string_to_dict(level_string)
+        levels = parse_xpath(self.xpath)
+        level_dict = level_string_to_dict(levels[0])
+        element = get_top_element(self.xpath, self.ga.element)
 
-        element = get_top_element(xpath, self.ga.element)
-        keys = [key for key in element.keys() if key == "class" or key == "id"] # FIXME add other attributes?
+        preds = [0] if level_dict['position'] is None else []
+        for pred in ["class", "id"]: # FIXME add other attributes?
+            if pred in element.keys() and not has_attribute(pred, level_dict):
+                preds.append(pred)
 
-        options = [0] + keys
-        shuffle(options)
-        for option in options:
-            if option == 0:
-                if level_dict['position'] is None:
-                    level_dict['position'] = get_correct_position(level_dict, element)
-                    level_string = level_dict_to_string(level_dict)
-                    levels[0] = level_string
-                    self.xpath = generate_xpath(levels)
-                    return True
-                else:
-                    continue
+        shuffle(preds)
+
+        for pred in preds:
+            if pred == 0:
+                # Add position predicate
+                level_dict['position'] = get_correct_position(level_dict, element)
+                levels[0] = level_dict_to_string(level_dict)
+                self.xpath = generate_xpath(levels)
+                return True
             else:
-                key = option
-                if not has_attribute(key, level_dict):
-                    level_dict['attributes'].append(key+"=\""+element.get(key)+"\"")
-                    if level_dict['position'] is not None:
-                        level_dict['position'] = get_correct_position(level_dict, element)
-                    level_string = level_dict_to_string(level_dict)
-                    levels[0] = level_string
-                    self.xpath = generate_xpath(levels)
-                    return True
-                else:
-                    continue
+                # Add named predicate
+                level_dict['attributes'].append(pred + "=\"" + element.get(pred) + "\"")
+                if level_dict['position'] is not None:
+                    level_dict['position'] = get_correct_position(level_dict, element)
+                level_string = level_dict_to_string(level_dict)
+                levels[0] = level_string
+                self.xpath = generate_xpath(levels)
+                return True
+
         return False
 
+    ## Append * to top level
     def trans_add_level(self):
-        abs_xpath = self.ga.abs_xpath
-        xpath = self.xpath
-        levels = parse_xpath(xpath)
-        levels = ['*'] + levels
-        if get_xpath_length(abs_xpath) == get_xpath_length(xpath):
+        levels = ['*'] + parse_xpath(self.xpath)
+
+        if get_xpath_length(self.ga.abs_xpath) == get_xpath_length(self.xpath):
             return False
+
         self.xpath = generate_xpath(levels)
         return True
 
+    ## Change top level tag to '*'
     def trans_remove_name(self):
-        xpath = self.xpath
-        levels = parse_xpath(xpath)
-        level_string = levels[0]
-        level_dict = level_string_to_dict(level_string)
-        element = get_top_element(xpath, self.ga.element)
+        levels = parse_xpath(self.xpath)
+        level_dict = level_string_to_dict(levels[0])
+        element = get_top_element(self.xpath, self.ga.element)
 
-        if level_dict['name'] != '*':
-            level_dict['name'] = '*'
-            level_dict['position'] = get_correct_position(level_dict, element)
-            levels[0] = level_dict_to_string(level_dict)
-            self.xpath = generate_xpath(levels)
-
+        # Cannot remove name if top level is already '*'
+        if level_dict['name'] == '*':
             return True
-        else:
-            return False
 
-    def trans_remove_predicate(self):
-        xpath = self.xpath
-        levels = parse_xpath(xpath)
-        level_string = levels[0]
-        level_dict = level_string_to_dict(level_string)
-        options = level_dict['attributes'][:]
+        level_dict['name'] = '*'
         if level_dict['position'] is not None:
-            options.append(0)
-        if len(options) > 0:
-            rand = randint(0, len(options)-1)
-            if options[rand] == 0:
-                level_dict['position'] = None
-            else:
-                del level_dict['atributes'][rand]
-            if level_dict['position'] is not None:
-                level_dict['position'] = get_correct_position(level_dict, element)
-            level_string = level_dict_to_string(level_dict)
-            levels[0] = level_string
-            self.xpath = generate_xpath(levels)
-            return True
-        else:
+            level_dict['position'] = get_correct_position(level_dict, element)
+
+        levels[0] = level_dict_to_string(level_dict)
+        self.xpath = generate_xpath(levels)
+        return True
+
+    ## Remove predicate (including position) at top level
+    def trans_remove_predicate(self):
+        levels = parse_xpath(self.xpath)
+        level_dict = level_string_to_dict(levels[0])
+        element = get_top_element(self.xpath, self.ga.element)
+
+        preds = level_dict['attributes'][:]
+        if level_dict['position'] is not None:
+            preds.append(0)
+
+        # Cannot remove predicate if there are none
+        if len(preds) == 0:
             return False
 
-    def trans_remove_level(self):
-        xpath = self.xpath
-        levels = parse_xpath(xpath)
-        if len(levels) > 1:
-            levels = levels[1:]
-            self.xpath = generate_xpath(levels)
-            return True
+        rand = randint(0, len(preds) - 1)
+        if preds[rand] == 0:
+            level_dict['position'] = None # Remove position
         else:
+            del level_dict['attributes'][rand] # Remove named predicate
+
+        if level_dict['position'] is not None:
+            level_dict['position'] = get_correct_position(level_dict, element)
+
+        levels[0] = level_dict_to_string(level_dict)
+        self.xpath = generate_xpath(levels)
+
+        return True
+
+    ## Remove top level
+    def trans_remove_level(self):
+        levels = parse_xpath(self.xpath)
+
+        # Cannot remove level if only one level
+        if len(levels) <= 1:
             return False
+
+        self.xpath = generate_xpath(levels[1:])
+        return True

@@ -20,7 +20,7 @@ def parse_arguments():
 
 if __name__ == '__main__':
 	args = parse_arguments()
-	xpath = "//html[1]/div[@id='div-id']/p[@class='a'][1]"
+	xpath = "//html[1]/div[@class='a' and @id='id1'][1]"
 
 	for i in range(5):
 		fit_val_temp=[10,(i+1),(i+1)/2,(i+1)/3]
@@ -39,20 +39,12 @@ if __name__ == '__main__':
 		ga.save()
 		print(fit_val_temp)
 
+	# for i in range(len(ga.pop)):
+	# 	for j in range(10):
+	# 		print(ga.pop[i].xpath)
+	# 		ga.pop[i].mutate()
+	# 		print(ga.pop[i].xpath, end="\n\n")
 
+	# ga.evolve()
+	# ga.save()
 
-
-	# ga.pop[0]
-    #
-    #
-	# ind = ga.pop[1]
-	# ind.trans_remove_level()
-	# print(ind.xpath)
-	# ind.trans_remove_level()
-	# print(ind.xpath)
-	# ind.trans_add_level()
-	# print(ind.xpath)
-	# ind.trans_add_predicate()
-	# print(ind.xpath)
-	# ind.trans_add_predicate()
-	# print(ind.xpath)
