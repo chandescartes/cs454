@@ -18,7 +18,8 @@ class GA(object):
         self.mut_k = mut_k
         self.use_elitism = use_elitism
 
-        self.DOM = etree.parse(dom_filepath)
+        utf8_html_parser = etree.HTMLParser(encoding='utf-8')
+        self.DOM = etree.parse(cleanup(dom_filepath),parser=utf8_html_parser)
         elements = self.DOM.xpath(xpath)
         assert len(elements) == 1, "Invalid absolute XPath!"
         self.element = elements[0]
@@ -114,7 +115,7 @@ class GA(object):
         #         parent2 = reverse_ranked[i-1]
         #         if parent1 is not parent2:
         #             self.parents.append(parent2)
-        #             break 
+        #             break
 
     def create_children(self):
         self.children = []
@@ -155,11 +156,11 @@ class GA(object):
 
         if len1 <= 1 or len2 <= 1:
             return parent1, parent2
-
-        r1, parsed1 = randint(1, len1 - 1), parse_xpath(parent1.xpath)
-        r2, parsed2 = randint(1, len2 - 1), parse_xpath(parent2.xpath)
-        child1 = Individual(self, generate_xpath(parsed1[:r1] + parsed2[r2:]))
-        child2 = Individual(self, generate_xpath(parsed2[:r2] + parsed1[r1:]))
+        r = randint(1, min(len1, len2) - 1)
+        parsed1 = parse_xpath(parent1.xpath)
+        parsed2 = parse_xpath(parent2.xpath)
+        child1 = Individual(self, generate_xpath(parsed1[:-r] + parsed2[-r:]))
+        child2 = Individual(self, generate_xpath(parsed2[:-r] + parsed1[-r:]))
 
         return child1, child2
 
@@ -217,7 +218,7 @@ class Individual(object):
             fitness = len(self.ga.DOM.xpath(self.xpath))
             assert fitness != 0
             return fitness
-        
+
         fitness = 0
         levels = parse_xpath(self.xpath)
         for level in levels:
@@ -262,17 +263,17 @@ class Individual(object):
 
         # Cannot add name if top level is not '*'
         if level_dict['name'] != '*':
-            return False 
+            return False
 
-        element = get_top_element(self.xpath, self.ga.element) 
+        element = get_top_element(self.xpath, self.ga.element)
         level_dict['name'] = element.tag
         if level_dict['position'] is not None:
             level_dict['position'] = get_correct_position(level_dict, element)
 
         # Update xpath with added name
         levels[0] = level_dict_to_string(level_dict)
-        self.xpath = generate_xpath(levels) 
-
+        self.xpath = generate_xpath(levels)
+        
         return True
 
     ## Add predicate (including position) at top level

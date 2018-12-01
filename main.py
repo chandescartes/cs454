@@ -20,7 +20,11 @@ def parse_arguments():
 
 if __name__ == '__main__':
 	args = parse_arguments()
-	xpath = "//html[1]/div[@class='a' and @id='id1'][1]"
+	xpath = '//article[@class="story theme-main"]/header/div'
+	# xpath = '//*[@id="story-header"]/div/div/p/time'
+
+
+
 
 	fit_val_temp=[0.1, 0.3, 0.7, 0.4, 0.3] # *, tag, position, class, id
 	ga = GA(
@@ -46,4 +50,3 @@ if __name__ == '__main__':
 
 	# ga.evolve()
 	# ga.save()
-
