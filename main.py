@@ -22,34 +22,29 @@ if __name__ == '__main__':
 	args = parse_arguments()
 	xpath = "//html[1]/div[@class='a' and @id='id1'][1]"
 
-	fitness_values = [5, 3, 1, 1]
+	for i in range(5):
+		fit_val_temp=[10,(i+1),(i+1)/2,(i+1)/3]
+		ga = GA(
+			pop_size=args.p,
+			eval_lim=args.f,
+			mut_rate=args.r,
+			dom_filepath=args.d,
+			xpath=xpath,
+			mut_k=args.k,
+			use_elitism=args.e,
+			fitness_values=fit_val_temp,
+			verbose=args.s
+			)
+		ga.evolve()
+		ga.save()
+		print(fit_val_temp)
 
-	ga = GA(
-		pop_size=args.p,
-		eval_lim=args.f,
-		mut_rate=args.r,
-		mut_k=args.k,
-		use_elitism=args.e,
-		dom_filepath=args.d,
-		xpath=xpath,
-		fitness_values=fitness_values,
-		verbose=args.s)
+	# for i in range(len(ga.pop)):
+	# 	for j in range(10):
+	# 		print(ga.pop[i].xpath)
+	# 		ga.pop[i].mutate()
+	# 		print(ga.pop[i].xpath, end="\n\n")
 
-	for i in range(len(ga.pop)):
-		for j in range(10):
-			print(ga.pop[i].xpath)
-			ga.pop[i].mutate()
-			print(ga.pop[i].xpath, end="\n\n")
-
-	# ind.trans_remove_level()
-	# print(ind.xpath)
-	# ind.trans_remove_level()
-	# print(ind.xpath)
-	# ind.trans_add_level()
-	# print(ind.xpath)
-	# ind.trans_add_predicate()
-	# print(ind.xpath)
-	# ind.trans_add_predicate()
-	# print(ind.xpath)
 	# ga.evolve()
 	# ga.save()
+
