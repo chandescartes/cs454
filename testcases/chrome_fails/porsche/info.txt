@@ -1,0 +1,21 @@
+webarchive url:
+https://web.archive.org/web/20141225103624/http://www.porsche.com/
+
+target element:
+<span>Welcome to Porsche</span>
+
+target XPath:
+/html/body/div[3]/div[3]/div/h2/span
+
+
+current url:
+https://www.porsche.com/
+
+target element:
+<span class="xh-highlight">Welcome to <nobr>Porsche</nobr></span>
+
+target XPath:
+/html/body/div[1]/div[3]/div/h2/span
+
+Result: 
+Welcome to Porsche

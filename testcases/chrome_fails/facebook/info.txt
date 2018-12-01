@@ -1,0 +1,22 @@
+webarchive url:
+https://web.archive.org/web/20160420111102/https://www.facebook.com/
+
+target element:
+<button type="submit" class="_6j mvm _6wk _6wl _58mi _6o _6v xh-highlight" name="websubmit" id="u_0_j">Sign Up</button>
+
+target XPath:
+//*[@id="u_0_j"]
+
+
+current url:
+https://www.facebook.com/
+
+target element:
+<button type="submit" class="_6j mvm _6wk _6wl _58mi _3ma _6o _6v" name="websubmit" id="u_0_x">Sign Up</button>
+
+target XPath:
+//*[@id="u_0_x"]
+
+Result: 
+Sign Up
+
