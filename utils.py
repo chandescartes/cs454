@@ -2,20 +2,25 @@ import lxml
 
 def generate_abs_path(element):
     levels = []
+
     while element is not None:
         level_dict = {
-            'name': None,
+            'name': element.tag,
             'position': None,
             'attributes': []
         }
-        level_dict['name'] = element.tag
+
         attrs = element.items()
-        for key, value in attrs:
-            if key == "id" or key == "class": # FIXME add other attributes?
-                level_dict['attributes'].append(key+"=\""+value+"\"")
-        level_dict['position'] = get_correct_position(level_dict, element):
+        for pred in ["class", "id"]: # FIXME add other attributes?
+            if pred in element.keys():
+                level_dict['attributes'].append(pred + "=\"" + element.get(pred) + "\"")
+
+        level_dict['position'] = get_correct_position(level_dict, element)
+
         levels.append(level_dict_to_string(level_dict))
         element = element.getparent()
+
+    levels.reverse()
     return generate_xpath(levels)
 
 def uniform_quote(xpath):
