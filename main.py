@@ -22,15 +22,25 @@ if __name__ == '__main__':
 	args = parse_arguments()
 	xpath = "//html[1]/div[@id='div-id']/p[@class='a'][1]"
 
-	ga = GA(
-		pop_size=args.p,
-		eval_lim=args.f,
-		mut_rate=args.r,
-		dom_filepath=args.d,
-		xpath=xpath,
-		mut_k=args.k,
-		use_elitism=args.e,
-		verbose=args.s)
+	for i in range(5):
+		fit_val_temp=[10,(i+1),(i+1)/2,(i+1)/3]
+		ga = GA(
+			pop_size=args.p,
+			eval_lim=args.f,
+			mut_rate=args.r,
+			dom_filepath=args.d,
+			xpath=xpath,
+			mut_k=args.k,
+			use_elitism=args.e,
+			fitness_values=fit_val_temp,
+			verbose=args.s
+			)
+		ga.evolve()
+		ga.save()
+		print(fit_val_temp)
+
+
+
 
 	# ga.pop[0]
     #
@@ -46,5 +56,3 @@ if __name__ == '__main__':
 	# print(ind.xpath)
 	# ind.trans_add_predicate()
 	# print(ind.xpath)
-	ga.evolve()
-	ga.save()
