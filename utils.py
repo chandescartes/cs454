@@ -1,8 +1,7 @@
 import lxml
-
 from bs4 import BeautifulSoup
 
-def generate_abs_path(element):
+def generate_abs_xpath(element):
     levels = []
 
     while element is not None:
@@ -13,17 +12,18 @@ def generate_abs_path(element):
         }
 
         attrs = element.items()
+
         for pred in ["class", "id"]: # FIXME add other attributes?
             if pred in element.keys():
                 level_dict['attributes'].append(pred + "=\"" + element.get(pred) + "\"")
 
         level_dict['position'] = get_correct_position(level_dict, element)
-
         levels.append(level_dict_to_string(level_dict))
         element = element.getparent()
 
     levels.reverse()
     return generate_xpath(levels)
+
 
 def uniform_quote(xpath):
     return xpath.replace("'", "\"")
