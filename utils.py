@@ -1,6 +1,6 @@
 import lxml
 
-def generate_abs_path(element):
+def generate_abs_xpath(element):
     levels = []
     while element is not None:
         level_dict = {
@@ -13,10 +13,11 @@ def generate_abs_path(element):
         for key, value in attrs:
             if key == "id" or key == "class": # FIXME add other attributes?
                 level_dict['attributes'].append(key+"=\""+value+"\"")
-        level_dict['position'] = get_correct_position(level_dict, element):
+        level_dict['position'] = get_correct_position(level_dict, element)
         levels.append(level_dict_to_string(level_dict))
         element = element.getparent()
     return generate_xpath(levels)
+
 
 def uniform_quote(xpath):
     return xpath.replace("'", "\"")

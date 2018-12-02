@@ -20,7 +20,7 @@ class GA(object):
         elements = self.DOM.xpath(xpath)
         assert len(elements) == 1, "Invalid absolute XPath!"
         self.element = elements[0]
-        self.abs_xpath = generate_abs_path(self.element)
+        self.abs_xpath = generate_abs_xpath(self.element)
 
         self.eval_tot = 0
         self.gen = 1
@@ -236,7 +236,7 @@ class Individual(object):
         level_dict = level_string_to_dict(level_string)
 
         element = get_top_element(xpath, self.ga.element)
-        keys = [key for key in element.keys() if key == "class" or key == "id"] # FIXME add other attributes?
+        keys = element.keys() if key == "class" or key == "id"] # FIXME add other attributes?
 
         options = [0] + keys
         shuffle(options)
