@@ -99,12 +99,12 @@ class GA(object):
         if self.use_lin_ranking:
             self.parents = []
 
-            n = ((1 + self.pop_size) * self.pop_size) / 2
+            n = ((1 + len(self.pop)) * len(self.pop)) / 2
             reverse_ranked = list(reversed(self.pop))
 
             while len(self.parents) < self.pop_size:
                 selector = randint(1, n)
-                for i in range(1, self.pop_size + 1):
+                for i in range(1, len(self.pop) + 1):
                     selector -= i
                     if selector <= 0:
                         break
@@ -114,7 +114,7 @@ class GA(object):
 
                 while True:
                     selector = randint(1, n)
-                    for i in range(1, self.pop_size + 1):
+                    for i in range(1, len(self.pop) + 1):
                         selector -= i
                         if selector <= 0:
                             break
