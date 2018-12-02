@@ -1,7 +1,7 @@
 import lxml
 from bs4 import BeautifulSoup
 
-def generate_abs_path(element):
+def generate_abs_xpath(element):
     levels = []
 
     while element is not None:

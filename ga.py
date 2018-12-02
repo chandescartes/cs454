@@ -1,5 +1,6 @@
 
-from random import randint, shuffle, uniform
+from random import randint, shuffle, uniform, sample, uniform
+import math
 
 import copy
 
@@ -9,14 +10,17 @@ from utils import *
 
 class GA(object):
 
-    def __init__(self, pop_size, eval_lim, mut_rate, mut_k, use_elitism, dom_filepath, xpath, fitness_values, verbose=True):
+    def __init__(self, pop_size, eval_lim, mut_rate, mut_k, crossover_rate, tournament_k, use_elitism, use_lin_ranking, dom_filepath, xpath, fitness_values, verbose=True):
         if verbose:
             print("Initializing Genetic Algorithm...")
         self.pop_size = pop_size
         self.eval_lim = eval_lim
+        self.crossover_rate = crossover_rate
         self.mut_rate = mut_rate
         self.mut_k = mut_k
         self.use_elitism = use_elitism
+        self.use_lin_ranking = use_lin_ranking
+        self.tournament_k = tournament_k
 
         utf8_html_parser = etree.HTMLParser(encoding='utf-8')
         self.DOM = etree.parse(cleanup(dom_filepath),parser=utf8_html_parser)
@@ -55,7 +59,11 @@ class GA(object):
             indiv = Individual(self, generate_xpath(levels[i:]))
             self.pop.append(indiv)
 
-        shuffle(self.pop)
+        if len(self.pop) % 2 != 0:
+            self.pop.append(Individual(self, self.abs_xpath))
+
+        self.eval_pop()
+
 
     def evolve(self):
         # self.optimum = self.pop[0]
@@ -63,7 +71,7 @@ class GA(object):
         self.printv("  G: {}     \tScore: {} \t{}%".format(self.gen, round(self.optimum.fitness,2), round(self.eval_tot/self.eval_lim*100, 1)))
 
         while self.eval_tot < self.eval_lim:
-            self.select_parents_by_rank()
+            self.select_parents()
             self.create_children()
             self.mutate_children()
             self.form_next_gen()
@@ -87,35 +95,40 @@ class GA(object):
             ind.eval()
             self.eval_tot += 1
 
-    def select_parents_by_rank(self):
-        self.parents = self.pop
-        shuffle(self.parents)
-        # self.parents = []
+    def select_parents(self):
+        if self.use_lin_ranking:
+            self.parents = []
 
-        # n = ((1 + self.pop_size) * self.pop_size) / 2
-        # reverse_ranked = list(reversed(self.pop))
+            n = ((1 + self.pop_size) * self.pop_size) / 2
+            reverse_ranked = list(reversed(self.pop))
 
-        # while len(self.parents) < self.pop_size:
-        #     selector = randint(1, n)
-        #     for i in range(1, self.pop_size + 1):
-        #         selector -= i
-        #         if selector <= 0:
-        #             break
+            while len(self.parents) < self.pop_size:
+                selector = randint(1, n)
+                for i in range(1, self.pop_size + 1):
+                    selector -= i
+                    if selector <= 0:
+                        break
 
-        #     parent1 = reverse_ranked[i-1]
-        #     self.parents.append(parent1)
+                parent1 = reverse_ranked[i-1]
+                self.parents.append(parent1)
 
-        #     while True:
-        #         selector = randint(1, n)
-        #         for i in range(1, self.pop_size + 1):
-        #             selector -= i
-        #             if selector <= 0:
-        #                 break
+                while True:
+                    selector = randint(1, n)
+                    for i in range(1, self.pop_size + 1):
+                        selector -= i
+                        if selector <= 0:
+                            break
 
-        #         parent2 = reverse_ranked[i-1]
-        #         if parent1 is not parent2:
-        #             self.parents.append(parent2)
-        #             break
+                    parent2 = reverse_ranked[i-1]
+                    if parent1 is not parent2:
+                        self.parents.append(parent2)
+                        break
+
+        else:
+            self.parents = []
+            while len(self.parents) < self.pop_size:
+                candidates = sample(self.pop, self.tournament_k)
+                self.parents.append(max(candidates))
 
     def create_children(self):
         self.children = []
@@ -141,28 +154,39 @@ class GA(object):
 
         if self.use_elitism:
             pop = self.pop + self.children
-            pop.sort()
-            self.pop = pop[:self.pop_size]
-            # while len(pop) > self.pop_size:
-            #     del pop[self.pop_size]
+            locators = []
+            nonlocators = []
+            for ind in pop:
+                if ind.get_type():
+                    locators.append(ind)
+                else:
+                    nonlocators.append(ind)
+
+            locators.sort()
+            nonlocators.sort()
+
+            self.pop = locators[:math.ceil(len(locators)/2)] + nonlocators[:math.floor(len(nonlocators)/2)]
 
         else:
             self.pop = self.children
             self.pop.sort()
 
     def mate(self, parent1, parent2):
-        len1 = get_xpath_length(parent1.xpath)
-        len2 = get_xpath_length(parent2.xpath)
-
-        if len1 <= 1 or len2 <= 1:
+        if uniform(0, 1) > self.crossover_rate:
             return parent1, parent2
-        r = randint(1, min(len1, len2) - 1)
-        parsed1 = parse_xpath(parent1.xpath)
-        parsed2 = parse_xpath(parent2.xpath)
-        child1 = Individual(self, generate_xpath(parsed1[:-r] + parsed2[-r:]))
-        child2 = Individual(self, generate_xpath(parsed2[:-r] + parsed1[-r:]))
+        else:
+            len1 = get_xpath_length(parent1.xpath)
+            len2 = get_xpath_length(parent2.xpath)
 
-        return child1, child2
+            if len1 <= 1 or len2 <= 1:
+                return parent1, parent2
+            r = randint(1, min(len1, len2) - 1)
+            parsed1 = parse_xpath(parent1.xpath)
+            parsed2 = parse_xpath(parent2.xpath)
+            child1 = Individual(self, generate_xpath(parsed1[:-r] + parsed2[-r:]))
+            child2 = Individual(self, generate_xpath(parsed2[:-r] + parsed1[-r:]))
+
+            return child1, child2
 
     def save(self):
         # with open('solution.csv', 'w') as csvfile:
@@ -252,9 +276,11 @@ class Individual(object):
         elements = self.ga.DOM.xpath(self.xpath)
         if len(elements) != 1:
             return False
+        else:
+            this, target = elements[0], self.ga.element
+            assert this.tag == target.tag and this.tail == target.tail and this.attrib == target.attrib, "Zombie Appeared!"
+            return True
 
-        this, target = elements[0], self.ga.element
-        return this.tag == target.tag and this.tail == target.tail and this.attrib == target.attrib
 
     ## Change top level '*' to a tag
     def trans_add_name(self):
