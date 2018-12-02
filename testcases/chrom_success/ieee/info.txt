@@ -1,0 +1,16 @@
+webarchive url:
+https://web.archive.org/web/20151104085813/https://ieeexplore.ieee.org/Xplore/home.jsp
+
+target element:
+<a class="Search-option-title" href="/web/20151104085813/https://ieeexplore.ieee.org/search/advsearch.jsp" id="advancedSearch">Advanced Search</a>
+
+target XPath:
+//*[@id="advancedSearch"]
+
+
+current url:
+https://ieeexplore.ieee.org/Xplore/home.jsp
+
+
+Result: 
+Advanced Search

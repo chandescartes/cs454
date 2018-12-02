@@ -1,21 +1,27 @@
 import lxml
+from bs4 import BeautifulSoup
 
-def generate_abs_xpath(element):
+def generate_abs_path(element):
     levels = []
+
     while element is not None:
         level_dict = {
-            'name': None,
+            'name': element.tag,
             'position': None,
             'attributes': []
         }
-        level_dict['name'] = element.tag
+
         attrs = element.items()
-        for key, value in attrs:
-            if key == "id" or key == "class": # FIXME add other attributes?
-                level_dict['attributes'].append(key+"=\""+value+"\"")
+
+        for pred in ["class", "id"]: # FIXME add other attributes?
+            if pred in element.keys():
+                level_dict['attributes'].append(pred + "=\"" + element.get(pred) + "\"")
+
         level_dict['position'] = get_correct_position(level_dict, element)
         levels.append(level_dict_to_string(level_dict))
         element = element.getparent()
+
+    levels.reverse()
     return generate_xpath(levels)
 
 
@@ -63,6 +69,8 @@ def get_correct_position(level_dict, element):
 def is_element_matching_level(element, level_dict):
     if level_dict['name'] is not '*' and level_dict['name'] != element.tag:
         return False
+    if element.tag is lxml.etree.Comment:
+        return False
     for attr in level_dict['attributes']:
         tmp = attr.split('=')
         key = tmp[0]
@@ -85,15 +93,16 @@ def level_string_to_dict(level_string):
         'attributes': []
     }
     s = level_string
+
     tmp = s.split('[')
     dic['name'] = tmp[0]
-
     for i in tmp[1:]:
         s = i.split(']')[0]
         if s.isdigit():
             dic['position'] = int(s)
         else:
-            preds = list(map(lambda x: x.strip(), s.split('and')))
+            preds = list(map(lambda x: x.strip(), s.split(' and ')))
+
             for pred in preds:
                 if pred.startswith('@'):
                     dic['attributes'].append(pred[1:])
@@ -114,3 +123,14 @@ def level_dict_to_string(level_dict):
     if dic['position'] is not None:
         s = s + "[" + str(dic['position']) + "]"
     return s
+
+def cleanup(dom_filepath):
+    new_filepath=""
+    with open(dom_filepath, "r", encoding="utf-8") as str:
+        soup=BeautifulSoup(str, features= "lxml")
+        soup=soup.prettify()
+        new_filepath=dom_filepath[:-5]+"_clean.html"
+        # print(soup)
+        with open(new_filepath, "w" , encoding="utf-8") as new:
+            new.write(soup)
+    return new_filepath

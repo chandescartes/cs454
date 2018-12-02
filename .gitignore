@@ -1,4 +1,7 @@
-/venv
+venv/
+/Report/*.aux
+/Report/*.synctex.gz
+/Report/*.log
 **/__pycache__/
 **/.DS_Store
 .tags
