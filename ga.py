@@ -88,7 +88,7 @@ class GA(object):
 
             # self.printv("  Evolution Finished")
 
-        print("Score: {} \tXPath: {}".format(self.optimum.xpath, round(self.optimum.fitness, 2)))
+        self.printv("Score: {} \tXPath: {}".format(self.optimum.xpath, round(self.optimum.fitness, 2)))
 
     def eval_pop(self):
         for ind in self.pop:
