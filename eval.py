@@ -16,7 +16,7 @@ from utils import *
 def parse_arguments():
 	parser = argparse.ArgumentParser()
 	parser.add_argument("-p", type=int, default=50, help="Set an even number population size (default=50)")
-	parser.add_argument("-f", type=int, default=5e+4, help="Set fitness evaluation limit")
+	parser.add_argument("-f", type=int, default=1e+4, help="Set fitness evaluation limit")
 	parser.add_argument("-r", type=float, default=0.1, help="Set mutation rate (0.0 ~ 1.0, default=0.1)")
 	parser.add_argument("-k", type=int, default=3, help="Set mutation limit per child (default=3)")
 	parser.add_argument("-c", type=float, default=0.8, help="Set crossover_rate (0.0 ~ 1.0, default=0.8)")
@@ -40,9 +40,10 @@ def eval_ga(row, arguments):
 	path_new = row[3]
 	xpath_new = row[5]
 
-	fit_val_1=[0.1001, 0.9002, 0.7003, 0.4004, 0.3005]
-	fit_val_optimal=fit_val_1 # *, tag, position, class, id
+	fit_val_1=[0.1001, 0.2002, 0.7003, 0.4004, 0.3005]
+	fit_val_9=[0.1001, 0.2002, 0.7003, 0.4004, 0.3005]
 
+	fit_val_optimal=fit_val_1 # *, tag, position, class, id
 	ga = GA(
 		pop_size=args.p,
 		eval_lim=args.f,
@@ -89,8 +90,14 @@ if __name__ == '__main__':
 			testdata.append(row)
 
 	results = []
-	with Pool(len(testdata)) as p:
-		results = p.map(partial(eval_ga, arguments=args), testdata)
+
+	# with Pool(len(testdata)) as p:
+	# 	results = p.map(partial(eval_ga, arguments=args), testdata)
+
+	for row in testdata:
+		print(row[2])
+		print(row[4])
+		results.append(eval_ga(row, args))
 
 
 	end=time.time()

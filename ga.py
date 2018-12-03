@@ -83,7 +83,7 @@ class GA(object):
                 self.optimum = copy.deepcopy(self.pop[0])
 
             if self.gen % 100 == 0:
-                self.printv("  G: {0}     \tScore: {1} \t{2}%".format(self.gen, round(self.pop[0].fitness,2), round(self.eval_tot/self.eval_lim*100, 1)))
+                self.printv("  G: {0}     \tScore: {1} \tOptimum: {2} \t{3}%".format(self.gen, round(self.pop[0].fitness,2), round(self.optimum.fitness,2) , round(self.eval_tot/self.eval_lim*100, 1)))
                 self.save()
 
             # self.printv("  Evolution Finished")
