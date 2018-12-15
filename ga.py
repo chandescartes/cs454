@@ -55,6 +55,10 @@ class GA(object):
 
         self.fitness_values  = fitness_values
 
+        # Other fields
+        self.verbose = verbose
+        
+        # Initialization
         self.init_population()
         self.printv("Initialization Complete!")
 
@@ -101,6 +105,7 @@ class GA(object):
 
         Loops until the number of evaluations has exceeded the limit.
         """
+
         formatter = "  G: {}     \tScore: {} \tOptimum: {} \t{}%"
         self.printv(formatter.format(
             self.gen, 
