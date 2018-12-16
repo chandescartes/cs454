@@ -44,7 +44,7 @@ Python implementation of Genetic Algorithm
 
 ### Built With
 
-* [Gensim](https://github.com/RaRe-Technologies/gensim) - Topic Modelling Library for Python
+* [lxml](https://lxml.de/) - lxml - XML and HTML with Python
 
 
-**Copyright (C) 2018 CS474 Team #6**
+**Copyright (C) 2018 CS454 Team #6**

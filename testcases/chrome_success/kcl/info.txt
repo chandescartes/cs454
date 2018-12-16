@@ -1,0 +1,17 @@
+webarchive url:
+https://web.archive.org/web/20160323045103/www.kcl.ac.uk/index.aspx
+
+target element:
+<p class="">We use cookies to track usage and preferences.<a href="" class="cb-enable">I understand</a><a href="/terms/index.aspx" class="cb-policy">Privacy Policy</a></p>
+
+target XPath:
+//*[@id="cookie-bar"]/p
+
+
+current url:
+https://www.kcl.ac.uk/index.aspx
+
+
+Result: 
+We use cookies to track usage and preferences.I understandPrivacy Policy
+We use cookies to track usage and preferences.I understand

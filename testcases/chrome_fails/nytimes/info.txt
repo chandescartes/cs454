@@ -1,0 +1,21 @@
+webarchive url:
+https://web.archive.org/web/20150405041859/http://www.nytimes.com/2015/04/05/opinion/sunday/put-schools-back-in-prison.html
+
+target element:
+<span class="caption-text">Inmates watching television at Angola State Penitentiary, Louisiana, 2002.</span>
+
+target XPath:
+//*[@id="media-100000003610142"]/figcaption/span[1]
+
+
+current url:
+https://www.nytimes.com/2015/04/05/opinion/sunday/put-schools-back-in-prison.html
+
+target element:
+<span class="css-8i9d0s e1olku6u0">Inmates watching television at Angola State Penitentiary, Louisiana, 2002.</span>
+
+target XPath:
+//*[@id="story"]/header/div[3]/div[3]/figure/figcaption/span[1]
+
+Result: 
+Inmates watching television at Angola State Penitentiary, Louisiana, 2002.

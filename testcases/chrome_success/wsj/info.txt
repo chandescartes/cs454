@@ -1,0 +1,16 @@
+webarchive url:
+https://web.archive.org/web/20160721081441/http://www.wsj.com/articles/pence-takes-center-stage-at-republican-convention-1469059331
+
+target element:
+<h2 class="sub-head" itemprop="description">Ted Cruz refuses to endorse Donald Trump, but speakers unite in rally against Clinton</h2>
+
+target XPath:
+//*[@id="article_sector"]/article/header/div/div/h2
+
+
+current url:
+https://www.wsj.com/articles/pence-takes-center-stage-at-republican-convention-1469059331
+
+
+Result:
+Ted Cruz refuses to endorse Donald Trump, but speakers unite in rally against Clinton
