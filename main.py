@@ -9,7 +9,7 @@ def parse_arguments():
 	parser = argparse.ArgumentParser()
 	parser.add_argument("-p", type=int, default=50, help="Set an even number population size (default=50)")
 	parser.add_argument("-f", type=int, default=1e+4, help="Set fitness evaluation limit")
-	parser.add_argument("-r", type=float, default=0.1, help="Set mutation rate (0.0 ~ 1.0, default=0.1)")
+	parser.add_argument("-r", type=float, default=0.3, help="Set mutation rate (0.0 ~ 1.0, default=0.3)")
 	parser.add_argument("-k", type=int, default=3, help="Set mutation limit per child (default=3)")
 	parser.add_argument("-c", type=float, default=0.8, help="Set crossover_rate (0.0 ~ 1.0, default=0.8)")
 	parser.add_argument("-t", type=int, default=3, help="Set tournament selection k value(default=3)")
@@ -29,7 +29,21 @@ if __name__ == '__main__':
 
 	testfile = args.d
 
-	fit_val_optimal=[0.1, 0.2, 0.7, 0.4, 0.3] # *, tag, position, class, id
+	testdata = []
+	with open(testfile,"r") as f:
+		reader = csv.reader(f)
+		line_num = -1
+		for row in reader:
+			if line_num < 0:
+				line_num += 1
+				continue
+			line_num += 1
+			testdata.append(row)
+
+	fit_vals = []
+	fit_val_1=[2.01, 3.02, 15.03, 9.04, -8.05]
+	fit_val_2=[0.1, 0.2, 0.7, 0.4, 0.3]
+
 
 	ga = GA(
 		pop_size=args.p,
@@ -49,15 +63,3 @@ if __name__ == '__main__':
 	ga.select_parents()
 	ga.evolve()
 	print(fit_val_optimal)
-
-
-def find_weights():
-	pass
-
-	# for i in range(len(ga.pop)):
-	# 	for j in range(10):
-	# 		print(ga.pop[i].xpath)
-	# 		ga.pop[i].mutate()
-	# 		print(ga.pop[i].xpath, end="\n\n")
-	# ga.evolve()
-	# ga.save()

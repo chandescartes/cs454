@@ -35,6 +35,7 @@ class GA(object):
         self.pop = []
         self.parents = []
         self.children = []
+        self.init_pop = []
 
         self.optimum = None
         self.verbose = verbose
@@ -63,6 +64,9 @@ class GA(object):
             self.pop.append(Individual(self, self.abs_xpath))
 
         self.eval_pop()
+        self.pop.sort()
+        self.init_pop = self.pop[:]
+
 
 
     def evolve(self):
@@ -128,7 +132,7 @@ class GA(object):
             self.parents = []
             while len(self.parents) < self.pop_size:
                 candidates = sample(self.pop, self.tournament_k)
-                self.parents.append(max(candidates))
+                self.parents.append(min(candidates))
 
     def create_children(self):
         self.children = []
@@ -170,7 +174,11 @@ class GA(object):
         else:
             self.pop = self.children
             self.pop.sort()
-
+            if len(self.init_pop) < self.pop_size:
+                self.pop = self.pop[:-len(self.init_pop)]
+                self.pop = self.pop + self.init_pop
+                self.pop.sort()
+                
     def mate(self, parent1, parent2):
         if uniform(0, 1) > self.crossover_rate:
             return parent1, parent2

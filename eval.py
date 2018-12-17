@@ -2,16 +2,22 @@ import sys, os
 import time
 import csv
 import argparse
+
 import math
+from statistics import mean
+
 
 from lxml import etree
 
 from functools import partial
 from multiprocessing import Pool
 
+from random import *
 
 from ga import GA
 from utils import *
+
+from tqdm import tqdm
 
 def parse_arguments():
 	parser = argparse.ArgumentParser()
@@ -25,12 +31,13 @@ def parse_arguments():
 	parser.add_argument("-e", action="store_true", help="Use elitism (default=generational_replacement)")
 	parser.add_argument("-d", type=str, required=True, help="Specify path to testfile")
 	parser.add_argument("-s", action="store_true", help="Show progress")
+	parser.add_argument("-P", action="store_true", help="Use parallel computation")
 
 	return parser.parse_args()
 
 
 
-def eval_ga(row, arguments):
+def eval_ga(row, arguments, fit_val):
 	start=time.time()
 
 	args=arguments
@@ -40,10 +47,7 @@ def eval_ga(row, arguments):
 	path_new = row[3]
 	xpath_new = row[5]
 
-	fit_val_1=[0.1001, 0.2002, 0.7003, 0.4004, 0.3005]
-	fit_val_9=[0.1001, 0.2002, 0.7003, 0.4004, 0.3005]
-
-	fit_val_optimal=fit_val_1 # *, tag, position, class, id
+	fit_val_temp=fit_val # *, tag, position, class, id
 	ga = GA(
 		pop_size=args.p,
 		eval_lim=args.f,
@@ -55,7 +59,7 @@ def eval_ga(row, arguments):
 		use_lin_ranking=args.l,
 		dom_filepath=path_old,
 		xpath=xpath_old,
-		fitness_values=fit_val_optimal,
+		fitness_values=fit_val_temp,
 		verbose=args.s
 		)
 	ga.select_parents()
@@ -73,12 +77,7 @@ if __name__ == '__main__':
 
 	testfile = args.d
 
-	fit_val_2=[0.1, 0.2, 0.7, 0.4, 0.3]
-
-
-	start = time.time()
 	testdata = []
-
 	with open(testfile,"r") as f:
 		reader = csv.reader(f)
 		line_num = -1
@@ -89,77 +88,105 @@ if __name__ == '__main__':
 			line_num += 1
 			testdata.append(row)
 
-	results = []
+	fit_vals = []
+	fit_val_1=[2.01, 3.02, 15.03, 9.04, -8.05]
+	fit_val_2=[0.1, 0.2, 0.7, 0.4, 0.3]
+	# fit_vals.append(fit_val_1)
+	# fit_vals.append(fit_val_2)
+	for i in range(100):
+		temp = []
+		for j in range(5):
+			temp.append(uniform(-5,10))
+		fit_vals.append(temp)
 
-	# with Pool(len(testdata)) as p:
-	# 	results = p.map(partial(eval_ga, arguments=args), testdata)
+	param_results = []
+	found_list = [False for i in range(len(testdata))]
 
-	for row in testdata:
-		print(row[2])
-		print(row[4])
-		results.append(eval_ga(row, args))
+	testnum = 6
 
+	initialtime = time.time()
+	with open("results{}.csv".format(testnum),"w", newline='') as csvfile:
+		writer = csv.writer(csvfile)
+		for fit_val_set in tqdm(fit_vals,desc='Total'):
+			start = time.time()
+			result_temp = []
+			for i in tqdm(range(5), desc='Current', leave=False):
+				results = []
+				if args.P:
+					with Pool(min(len(testdata),8)) as p:
+						results = p.map(partial(eval_ga, arguments=args, fit_val=fit_val_set), testdata)
+				else:
+					for row in testdata:
+						print(row[2])
+						print(row[4])
+						results.append(eval_ga(row, args))
 
-	end=time.time()
-	print("{} seconds elapsed.".format(round(end-start,2)))
+				time.sleep(1)
 
+				success = 0
+				fail = 0
+				listfound = 0
+				line_num = 0
 
-	success = 0
-	fail = 0
-	listfound = 0
-	line_num = 0
+				for xpath_robust, xpath_fitness in results:
+					row=testdata[line_num]
+					line_num += 1
 
-	for xpath_robust, xpath_fitness in results:
-		row=testdata[line_num]
-		line_num += 1
+					path_new = row[3]
+					xpath_new = row[5]
 
-		path_new = row[3]
-		xpath_new = row[5]
+					utf8_html_parser = etree.HTMLParser(encoding='utf-8')
+					new_DOM = etree.parse(cleanup(path_new),parser=utf8_html_parser)
 
-		utf8_html_parser = etree.HTMLParser(encoding='utf-8')
-		new_DOM = etree.parse(cleanup(path_new),parser=utf8_html_parser)
+					query = new_DOM.xpath(xpath_new)
 
+					assert len(query) == 1, "Multiple items found in new query"
+					target = query[0]
 
+					final_path = finalize_xpath(xpath_robust)
+					found = new_DOM.xpath(xpath_robust)
 
-		query = new_DOM.xpath(xpath_new)
+					if len(found) != 1:
+						# print("Test Case {}: Robust xpath failed. Fitness: {}. Elements found: {}".format(line_num, xpath_fitness,len(found)))
+						# print(etree.tostring(target))
+						if len(found) > 0:
+							# print(" ")
+							# for elem in found:
+							# 	print(etree.tostring(elem))
+							for elem in found:
+								if elem == target:
+									# print("List was found.")
+									listfound += 1
+									continue
+						fail += 1
+						# print(" ")
+					elif (found[0]==target):
+						# print("Test Case {}: Found! Fitness: {}".format(line_num, xpath_fitness))
+						success += 1
+						found_list[line_num-1] = True
+					else:
+						# print("Test Case {}: Robust xpath is different. Fitness: {}".format(line_num, xpath_fitness))
+						fail += 1
+					# print(final_path)
+					# bad_chars = '(){}<> \n\r\t'
 
-		assert len(query) == 1, "Multiple items found in new query"
-		target = query[0]
+				# print("{} out of {} cases works.".format(success, success+fail))
+				# print("{} partials found.".format(listfound))
+				# assert this.text.strip(bad_chars) == target.text.strip(bad_chars), "Different elements!"
 
+				result_temp.append(success+listfound*0.01)
 
-		found = new_DOM.xpath(xpath_robust)
-
-		if len(found) != 1:
-			print("Test Case {}: Robust xpath failed. Fitness: {}. Elements found: {}".format(line_num, xpath_fitness,len(found)))
-			print(xpath_robust)
-			print(etree.tostring(target))
-			if len(found) > 0:
-				print(" ")
-				for elem in found:
-					print(etree.tostring(elem))
-				if (found[0]==target):
-					print("List was found.")
-					listfound += 1
-			fail += 1
-			print(" ")
-		elif (found[0]==target):
-			print("Test Case {}: Found! Fitness: {}".format(line_num, xpath_fitness))
-			success += 1
-
-		else:
-			print("Test Case {}: Robust xpath is different. Fitness: {}".format(line_num, xpath_fitness))
-			fail += 1
-
-
-		bad_chars = '(){}<> \n\r\t'
-
-	print("{} out of {} cases works.".format(success, success+fail))
-	print("{} partials found.".format(listfound))
-	# assert this.text.strip(bad_chars) == target.text.strip(bad_chars), "Different elements!"
-
-	end=time.time()
-	print("{} seconds elapsed.".format(round(end-start,2)))
-
+			# print("Params: {} Average: {} Max: {} Min:{}".format(fit_val_set,mean(result_temp),max(result_temp), min(result_temp)))
+			result_temp += fit_val_set
+			param_results.append(result_temp)
+			writer.writerow(result_temp)
+			end=time.time()
+			# print("{} seconds elapsed.".format(round(end-start,2)))
+		end = time.time()
+		print("{} seconds elapsed in total.".format(round(end-initialtime)))
+	with open("found{}.csv".format(testnum), "w", newline='') as foundfile:
+		writer = csv.writer(foundfile)
+		writer.writerow(found_list)
 
 def find_weights():
 	pass

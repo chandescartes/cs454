@@ -1,6 +1,8 @@
 import lxml
 from bs4 import BeautifulSoup
 
+import os.path
+
 def generate_abs_xpath(element):
     levels = []
 
@@ -102,7 +104,6 @@ def level_string_to_dict(level_string):
             dic['position'] = int(s)
         else:
             preds = list(map(lambda x: x.strip(), s.split(' and ')))
-
             for pred in preds:
                 if pred.startswith('@'):
                     dic['attributes'].append(pred[1:])
@@ -118,6 +119,11 @@ def level_dict_to_string(level_dict):
             if preds != "":
                 preds = preds + " and "
             preds = preds + "@" +attr
+        if 'classes' in dic:
+            for c in dic['classes']:
+                if preds != "":
+                    preds = preds + " and "
+                preds = preds + "contains(@class,\"" + c + "\")"
         preds = '[' + preds + ']'
         s = s + preds
     if dic['position'] is not None:
@@ -125,12 +131,31 @@ def level_dict_to_string(level_dict):
     return s
 
 def cleanup(dom_filepath):
-    new_filepath=""
-    with open(dom_filepath, "r", encoding="utf-8") as str:
-        soup=BeautifulSoup(str, features= "lxml")
-        soup=soup.prettify()
-        new_filepath=dom_filepath[:-5]+"_clean.html"
-        # print(soup)
-        with open(new_filepath, "w" , encoding="utf-8") as new:
-            new.write(soup)
+    new_filepath=dom_filepath[:-5]+"_clean.html"
+    if not os.path.isfile(new_filepath):
+        with open(dom_filepath, "r", encoding="utf-8") as str:
+            soup=BeautifulSoup(str, features= "lxml")
+            soup=soup.prettify()
+            # print(soup)
+            with open(new_filepath, "w", encoding="utf-8") as new:
+                new.write(soup)
+
     return new_filepath
+
+def finalize_xpath(xpath):
+    levels = parse_xpath(xpath)
+    new_levels = []
+    for level_string in levels:
+        level_dict = level_string_to_dict(level_string)
+        classes = []
+        for i, attribute in enumerate(level_dict['attributes']):
+            if attribute.startswith('class'):
+                classes = attribute.split("\"")[1].split()
+                break
+
+        if len(classes) > 0:
+            del level_dict['attributes'][i]
+            level_dict['classes'] = classes
+        new_levels.append(level_dict_to_string(level_dict))
+
+    return generate_xpath(new_levels)
