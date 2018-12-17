@@ -2,6 +2,10 @@ venv/
 /Report/*.aux
 /Report/*.synctex.gz
 /Report/*.log
+/Report/*.out
+/Report/*.toc
 **/__pycache__/
 **/.DS_Store
 .tags
+results/
+results.csv
