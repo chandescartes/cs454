@@ -57,7 +57,7 @@ class GA(object):
 
         # Other fields
         self.verbose = verbose
-        
+
         # Initialization
         self.init_population()
         self.printv("Initialization Complete!")
@@ -92,12 +92,15 @@ class GA(object):
             indiv = Individual(self, generate_xpath(levels[i:]))
             self.pop.append(indiv)
 
-        # Make sure the population is an even number 
+        # Make sure the population is an even number
         if len(self.pop) % 2 != 0:
             self.pop.append(Individual(self, self.abs_xpath))
 
         # Evaluate the fitness of the initial population
         self.eval_pop()
+        self.pop.sort()
+        self.init_pop = self.pop[:]
+
 
 
     def evolve(self):
@@ -108,7 +111,7 @@ class GA(object):
 
         formatter = "  G: {}     \tScore: {} \tOptimum: {} \t{}%"
         self.printv(formatter.format(
-            self.gen, 
+            self.gen,
             round(self.optimum.fitness, 2),
             round(self.optimum.fitness, 2),
             round(self.eval_tot / self.eval_lim * 100, 1)))
@@ -126,7 +129,7 @@ class GA(object):
 
             if self.gen % 100 == 0:
                 self.printv(formatter.format(
-                    self.gen, 
+                    self.gen,
                     round(self.pop[0].fitness, 2),
                     round(self.optimum.fitness, 2),
                     round(self.eval_tot/self.eval_lim*100, 1)))
@@ -186,7 +189,7 @@ class GA(object):
             self.parents = []
             while len(self.parents) < self.pop_size:
                 candidates = sample(self.pop, self.tournament_k)
-                self.parents.append(max(candidates))
+                self.parents.append(min(candidates))
 
 
     def create_children(self):
