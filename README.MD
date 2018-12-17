@@ -16,13 +16,14 @@ pip install -r requirements.txt
 
 
 ### Running the Codes
-Blah
+
 ```
 python main.py [option]
 ```
 Results are saved as result.csv
 
 #### Options:
+- ```-d``` Specify path to html file (required)
 - ```-p``` Set an even number population size (default=30)
 - ```-f``` Set fitness evaluation limit
 - ```-r``` Set mutation rate (0.0 ~ 1.0, default=0.1)
@@ -32,7 +33,7 @@ Results are saved as result.csv
 
 
 ### Table of Contents
-Main python source
+Main python source for robust XPath Generator
 ```
 /main.py
 ```
@@ -40,7 +41,10 @@ Python implementation of Genetic Algorithm
 ```
 /ga.py
 ```
-
+Hyperparameter testing suite
+```
+/eval.py
+```
 
 ### Built With
 

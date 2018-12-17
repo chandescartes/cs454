@@ -57,7 +57,7 @@ def eval_ga(row, arguments, fit_val):
 		tournament_k=args.t,
 		use_elitism=args.e,
 		use_lin_ranking=args.l,
-		dom_filepath=path_old,
+		dom_filepath=path_old.strip(),
 		xpath=xpath_old,
 		fitness_values=fit_val_temp,
 		verbose=args.s
@@ -89,20 +89,16 @@ if __name__ == '__main__':
 			testdata.append(row)
 
 	fit_vals = []
-	fit_val_1=[2.01, 3.02, 15.03, 9.04, -8.05]
-	fit_val_2=[0.1, 0.2, 0.7, 0.4, 0.3]
-	# fit_vals.append(fit_val_1)
-	# fit_vals.append(fit_val_2)
-	for i in range(100):
+	for i in range(3):
 		temp = []
 		for j in range(5):
-			temp.append(uniform(-5,10))
+			temp.append(uniform(0,10))
 		fit_vals.append(temp)
 
 	param_results = []
 	found_list = [False for i in range(len(testdata))]
 
-	testnum = 6
+	testnum = 7
 
 	initialtime = time.time()
 	with open("results{}.csv".format(testnum),"w", newline='') as csvfile:
@@ -117,9 +113,9 @@ if __name__ == '__main__':
 						results = p.map(partial(eval_ga, arguments=args, fit_val=fit_val_set), testdata)
 				else:
 					for row in testdata:
-						print(row[2])
-						print(row[4])
-						results.append(eval_ga(row, args))
+						# print(row[2])
+						# print(row[4])
+						results.append(eval_ga(row, args, fit_val_set))
 
 				time.sleep(1)
 
