@@ -113,8 +113,6 @@ if __name__ == '__main__':
 						results = p.map(partial(eval_ga, arguments=args, fit_val=fit_val_set), testdata)
 				else:
 					for row in testdata:
-						# print(row[2])
-						# print(row[4])
 						results.append(eval_ga(row, args, fit_val_set))
 
 				time.sleep(1)

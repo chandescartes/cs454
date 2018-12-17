@@ -8,3 +8,4 @@ venv/
 **/.DS_Store
 .tags
 results/
+results.csv

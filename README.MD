@@ -21,7 +21,9 @@ pip install -r requirements.txt
 python main.py [option]
 ```
 
-Results are saved as result.csv
+For each test case, three candidate robust XPaths are found.
+
+Results are saved as ```results.csv```
 
 #### Options:
 - ```-d``` Specify path to test file (required)

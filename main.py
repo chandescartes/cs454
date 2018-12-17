@@ -23,10 +23,6 @@ def parse_arguments():
 if __name__ == '__main__':
 	args = parse_arguments()
 
-	xpath = '//article[@class="story theme-main"]/header/div'
-	# xpath = '//*[@id="story-header"]/div/div/p/time'
-
-
 	testfile = args.d
 
 	testdata = []
@@ -45,22 +41,43 @@ if __name__ == '__main__':
 	fit_val_2=[2.1, 9.5, 3.5, 6.1, 7.8]
 	fit_val_3=[7.5, 9.1, 4.4, 9.6,-2.1]
 
+	fit_vals.append(fit_val_1)
+	fit_vals.append(fit_val_2)
+	fit_vals.append(fit_val_3)
 
-	ga = GA(
-		pop_size=args.p,
-		eval_lim=args.f,
-		mut_rate=args.r,
-		mut_k=args.k,
-		crossover_rate=args.c,
-		tournament_k=args.t,
-		use_elitism=args.e,
-		use_lin_ranking=args.l,
-		dom_filepath=args.d,
-		xpath=xpath,
-		fitness_values=fit_val_optimal,
-		verbose=args.s
-		)
+	results = []
+	headers = ["Filepath", "Target XPath", "Robust XPath 1", "Robust XPath 2", "Robust XPath 3"]
+	results.append(headers)
 
-	ga.select_parents()
-	ga.evolve()
-	print(fit_val_optimal)
+	for row in testdata:
+		result = []
+
+		file = row[0]
+		xpath = row[1]
+		result.append(file)
+		result.append(xpath)
+
+		for fit_val in fit_vals:
+			ga = GA(
+				pop_size=args.p,
+				eval_lim=args.f,
+				mut_rate=args.r,
+				mut_k=args.k,
+				crossover_rate=args.c,
+				tournament_k=args.t,
+				use_elitism=args.e,
+				use_lin_ranking=args.l,
+				dom_filepath=file,
+				xpath=xpath,
+				fitness_values=fit_val,
+				verbose=args.s
+				)
+			ga.select_parents()
+			ga.evolve()
+			result.append(ga.optimum.xpath)
+		results.append(result)
+
+	with open("results.csv", "w", newline='') as csvfile:
+		writer = csv.writer(csvfile)
+		for row in results:
+			writer.writerow(row)
