@@ -8,7 +8,7 @@ from ga import GA
 def parse_arguments():
 	parser = argparse.ArgumentParser()
 	parser.add_argument("-p", type=int, default=50, help="Set an even number population size (default=50)")
-	parser.add_argument("-f", type=int, default=1e+4, help="Set fitness evaluation limit")
+	parser.add_argument("-f", type=int, default=1e+4, help="Set fitness evaluation limit (default=10000)")
 	parser.add_argument("-r", type=float, default=0.3, help="Set mutation rate (0.0 ~ 1.0, default=0.3)")
 	parser.add_argument("-k", type=int, default=3, help="Set mutation limit per child (default=3)")
 	parser.add_argument("-c", type=float, default=0.8, help="Set crossover_rate (0.0 ~ 1.0, default=0.8)")
