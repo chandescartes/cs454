@@ -1,0 +1,3 @@
+﻿Filepath,Target Xpath
+./testcases/full_xpaths/bbc/spacex_2015.html,"//*[@id=""main-content""]/div[2]/div[1]/h1"
+./testcases/full_xpaths/cnn/celeb_2012.html,"//*[@id=""cnnContentContainer""]/div[6]/div[3]/div/div[2]"

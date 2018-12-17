@@ -1,7 +1,0 @@
-source,type,filepath_old,filepath_new,target_old,target_new,date_retrieved_old,date_retrieved_new
-Donga Science,news,./testcases/full_xpaths/dongascience/dongascience_2016.html,./testcases/full_xpaths/dongascience/dongascience_2018.html,"//*[@id=""snews_view""]/div[1]/div[1]/h3","//*[@id=""article_title""]/h2",2016,2018
-Nature,journal,./testcases/full_xpaths/nature/nature_2013.html,./testcases/full_xpaths/nature/nature_2018.html,"//*[@id=""article""]/header/ul/li/span/a","//*[@id=""article""]/header/ul/li/span/a",2013,2018
-Facebook,sns,./testcases/chrome_success/facebook/Facebook_2016.html,./testcases/chrome_success/facebook/Facebook_2018.html,"//*[@id=""reg_pages_msg""]","//*[@id=""reg_pages_msg""]",2016,2018
-IEEE,academy,./testcases/chrome_success/ieee/IEEE_2015.html,./testcases/chrome_success/ieee/IEEE_2018.html,"//*[@id=""advancedSearch""]","//*[@id=""advancedSearch""]",2015,2018
-King's College London,university,./testcases/chrome_success/kcl/kcl_2016.html,./testcases/chrome_success/kcl/kcl_2018.html,"//*[@id=""cookie-bar""]/p","//*[@id=""cookie-bar""]/p",2016,2018
-Wall Street Journal,news,./testcases/chrome_success/wsj/wsj_2016.html,./testcases/chrome_success/wsj/wsj_2018.html,"//*[@id=""article_sector""]/article/header/div/div/h2","//*[@id=""article_sector""]/article/header/div/div/h2",2016,2018

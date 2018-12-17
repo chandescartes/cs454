@@ -20,16 +20,22 @@ pip install -r requirements.txt
 ```
 python main.py [option]
 ```
+
 Results are saved as result.csv
 
 #### Options:
-- ```-d``` Specify path to html file (required)
+- ```-d``` Specify path to test file (required)
 - ```-p``` Set an even number population size (default=30)
 - ```-f``` Set fitness evaluation limit
 - ```-r``` Set mutation rate (0.0 ~ 1.0, default=0.1)
 - ```-k``` Set mutation limit per child (default=10)
 - ```-s``` Show progress
 - ```-e``` Use elitism (default=generational_replacement)
+
+Test files are ```.csv``` files with a test case on each row.
+Each test case is a filepath to a html document and a XPath of the target element.
+
+See ```example_testfile.csv``` for reference.
 
 
 ### Table of Contents
