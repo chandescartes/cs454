@@ -21,17 +21,18 @@ from tqdm import tqdm
 
 def parse_arguments():
 	parser = argparse.ArgumentParser()
+	parser.add_argument("-d", type=str, required=True, help="Specify path to testfile")
 	parser.add_argument("-p", type=int, default=50, help="Set an even number population size (default=50)")
-	parser.add_argument("-f", type=int, default=1e+4, help="Set fitness evaluation limit")
-	parser.add_argument("-r", type=float, default=0.1, help="Set mutation rate (0.0 ~ 1.0, default=0.1)")
+	parser.add_argument("-f", type=int, default=1e+4, help="Set fitness evaluation limit (default=10000)")
+	parser.add_argument("-r", type=float, default=0.1, help="Set mutation rate (0.0 ~ 1.0, default=0.3)")
 	parser.add_argument("-k", type=int, default=3, help="Set mutation limit per child (default=3)")
 	parser.add_argument("-c", type=float, default=0.8, help="Set crossover_rate (0.0 ~ 1.0, default=0.8)")
 	parser.add_argument("-t", type=int, default=3, help="Set tournament selection k value(default=3)")
 	parser.add_argument("-l", action="store_true", help="Use linear ranking (default=tournament selection)")
 	parser.add_argument("-e", action="store_true", help="Use elitism (default=generational_replacement)")
-	parser.add_argument("-d", type=str, required=True, help="Specify path to testfile")
 	parser.add_argument("-s", action="store_true", help="Show progress")
 	parser.add_argument("-P", action="store_true", help="Use parallel computation")
+	parser.add_argument("-i", type=int, default=0, help="Set results id (default=0)")
 
 	return parser.parse_args()
 
@@ -98,7 +99,7 @@ if __name__ == '__main__':
 	param_results = []
 	found_list = [False for i in range(len(testdata))]
 
-	testnum = 7
+	testnum = args.i
 
 	initialtime = time.time()
 	with open("results{}.csv".format(testnum),"w", newline='') as csvfile:
@@ -113,8 +114,6 @@ if __name__ == '__main__':
 						results = p.map(partial(eval_ga, arguments=args, fit_val=fit_val_set), testdata)
 				else:
 					for row in testdata:
-						# print(row[2])
-						# print(row[4])
 						results.append(eval_ga(row, args, fit_val_set))
 
 				time.sleep(1)
@@ -143,41 +142,26 @@ if __name__ == '__main__':
 					found = new_DOM.xpath(xpath_robust)
 
 					if len(found) != 1:
-						# print("Test Case {}: Robust xpath failed. Fitness: {}. Elements found: {}".format(line_num, xpath_fitness,len(found)))
-						# print(etree.tostring(target))
 						if len(found) > 0:
-							# print(" ")
-							# for elem in found:
-							# 	print(etree.tostring(elem))
 							for elem in found:
 								if elem == target:
-									# print("List was found.")
 									listfound += 1
 									continue
 						fail += 1
-						# print(" ")
+
 					elif (found[0]==target):
-						# print("Test Case {}: Found! Fitness: {}".format(line_num, xpath_fitness))
 						success += 1
 						found_list[line_num-1] = True
-					else:
-						# print("Test Case {}: Robust xpath is different. Fitness: {}".format(line_num, xpath_fitness))
-						fail += 1
-					# print(final_path)
-					# bad_chars = '(){}<> \n\r\t'
 
-				# print("{} out of {} cases works.".format(success, success+fail))
-				# print("{} partials found.".format(listfound))
-				# assert this.text.strip(bad_chars) == target.text.strip(bad_chars), "Different elements!"
+					else:
+						fail += 1
 
 				result_temp.append(success+listfound*0.01)
 
-			# print("Params: {} Average: {} Max: {} Min:{}".format(fit_val_set,mean(result_temp),max(result_temp), min(result_temp)))
 			result_temp += fit_val_set
 			param_results.append(result_temp)
 			writer.writerow(result_temp)
 			end=time.time()
-			# print("{} seconds elapsed.".format(round(end-start,2)))
 		end = time.time()
 		print("{} seconds elapsed in total.".format(round(end-initialtime)))
 	with open("found{}.csv".format(testnum), "w", newline='') as foundfile:
