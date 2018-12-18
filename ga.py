@@ -35,11 +35,13 @@ class GA(object):
         self.pop = []
         self.parents = []
         self.children = []
+        self.init_pop = []
 
         self.optimum = None
         self.verbose = verbose
 
         self.fitness_values = fitness_values
+
 
         self.init_population()
 
@@ -63,6 +65,9 @@ class GA(object):
             self.pop.append(Individual(self, self.abs_xpath))
 
         self.eval_pop()
+        self.pop.sort()
+        self.print_pop() # FIXME
+        self.init_pop = self.pop[:]
 
 
     def evolve(self):
@@ -76,6 +81,10 @@ class GA(object):
             self.mutate_children()
             self.form_next_gen()
             self.gen += 1
+
+            if self.gen % 10 == 0: # FIXME
+                self.print_pop()
+
             if self.optimum > self.pop[0]:
                 # print("new opt")
                 # print(self.optimum.fitness)
@@ -128,7 +137,7 @@ class GA(object):
             self.parents = []
             while len(self.parents) < self.pop_size:
                 candidates = sample(self.pop, self.tournament_k)
-                self.parents.append(max(candidates))
+                self.parents.append(min(candidates))
 
     def create_children(self):
         self.children = []
@@ -170,6 +179,10 @@ class GA(object):
         else:
             self.pop = self.children
             self.pop.sort()
+            if len(self.init_pop) < self.pop_size:
+                self.pop = self.pop[:-len(self.init_pop)]
+                self.pop = self.pop + self.init_pop
+                self.pop.sort()
 
     def mate(self, parent1, parent2):
         if uniform(0, 1) > self.crossover_rate:
@@ -195,6 +208,11 @@ class GA(object):
         #         writer.writerow([node])
         # TODO
         pass
+
+    def print_pop(self):
+        print("G: ", self.gen)
+        for ind in self.pop:
+            print("\tScore: ",ind.fitness, "\tXPath: ", ind.xpath)
 
 class Individual(object):
 

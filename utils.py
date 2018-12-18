@@ -118,6 +118,11 @@ def level_dict_to_string(level_dict):
             if preds != "":
                 preds = preds + " and "
             preds = preds + "@" +attr
+        if 'classes' in dic:
+            for c in dic['classes']:
+                if preds != "":
+                    preds = preds + " and "
+                preds = preds + "contains(@class,\"" + c + "\")"
         preds = '[' + preds + ']'
         s = s + preds
     if dic['position'] is not None:
@@ -134,3 +139,21 @@ def cleanup(dom_filepath):
         with open(new_filepath, "w" , encoding="utf-8") as new:
             new.write(soup)
     return new_filepath
+
+def finalize_xpath(xpath):
+    levels = parse_xpath(xpath)
+    new_levels = []
+    for level_string in levels:
+        level_dict = level_string_to_dict(level_string):
+        classes = []
+        for i, attribute in enumerate(level_dict['attributes']):
+            if attribute.startswith('class'):
+                classes = attribute.split("\"")[1].split()
+                break
+
+        if len(classes) > 0:
+            del level_dict['attributes'][i]
+            level_dict['classes'] = classes
+        new_levels.append(level_dict_to_string(level_dict))
+
+    return generate_xpath(new_levels)

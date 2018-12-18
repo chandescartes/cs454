@@ -1,0 +1,2 @@
+source,type,filepath_old,filepath_new,target_old,target_new,date_retrieved_old,date_retrieved_new
+NY Times,news,./testcases/chrome_fails/nytimes/nytimes_2015.html,./testcases/chrome_fails/nytimes/nytimes_2018.html,"//*[@id=""media-100000003610142""]/figcaption/span[1]","//*[@id=""story""]/header/div[3]/div[3]/figure/figcaption/span[1]",2015,2018
